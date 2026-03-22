@@ -1,0 +1,511 @@
+/* ================================================================
+   CanadaFirst Side Panel Styles
+   ================================================================ */
+
+:root {
+  --red-800: #991b1b;
+  --red-700: #b91c1c;
+  --red-600: #dc2626;
+  --red-500: #ef4444;
+  --red-100: #fee2e2;
+  --red-50: #fef2f2;
+  --warm-50: #faf8f5;
+  --warm-100: #f3efe8;
+  --warm-200: #e8e0d4;
+  --warm-300: #d4c8b8;
+  --warm-400: #a89a8a;
+  --warm-800: #3d3229;
+  --warm-900: #2a231c;
+  --green-800: #166534;
+  --green-700: #15803d;
+  --green-600: #16a34a;
+  --green-100: #dcfce7;
+  --green-50: #f0fdf4;
+  --amber-700: #b45309;
+  --amber-100: #fef3c7;
+  --white: #ffffff;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--warm-50);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---------- Header ---------- */
+.sb-header {
+  height: 50px;
+  background: var(--white);
+  border-bottom: 1px solid var(--warm-200);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 9px;
+  flex-shrink: 0;
+}
+.sb-logo {
+  width: 26px;
+  height: 26px;
+  background: var(--red-600);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.sb-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--warm-900);
+}
+
+/* ---------- Messages ---------- */
+.sb-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+.sb-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.sb-messages::-webkit-scrollbar-thumb {
+  background: var(--warm-200);
+  border-radius: 4px;
+}
+
+/* ---------- Input bar ---------- */
+.sb-input-bar {
+  padding: 10px 14px;
+  background: var(--white);
+  border-top: 1px solid var(--warm-200);
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.sb-input-bar input {
+  flex: 1;
+  border: 1px solid var(--warm-200);
+  border-radius: var(--radius-full);
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-family: var(--font-body);
+  color: var(--warm-900);
+  outline: none;
+  transition: border 0.2s;
+}
+.sb-input-bar input:focus {
+  border-color: var(--red-500);
+}
+.sb-input-bar input::placeholder {
+  color: var(--warm-300);
+}
+.sb-send {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: var(--red-600);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.sb-send:hover {
+  background: var(--red-700);
+}
+
+/* ---------- Message elements ---------- */
+.m {
+  max-width: 94%;
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.m.agent {
+  align-self: flex-start;
+}
+.m.user {
+  align-self: flex-end;
+}
+.m-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--warm-900);
+}
+.m.agent .m-bubble {
+  background: var(--white);
+  border: 1px solid var(--warm-200);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow-soft);
+}
+.m.user .m-bubble {
+  background: var(--red-600);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+/* ---------- Status badges ---------- */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-badge.canadian {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+.status-badge.foreign {
+  background: var(--amber-100);
+  color: var(--amber-700);
+}
+
+/* ---------- Origin card ---------- */
+.origin-card {
+  background: var(--white);
+  border: 1px solid var(--warm-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.oc-header {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.oc-flag {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.oc-flag.ca {
+  background: var(--green-100);
+}
+.oc-flag.foreign {
+  background: var(--amber-100);
+}
+.oc-info .oc-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--warm-900);
+}
+.oc-info .oc-detail {
+  font-size: 11.5px;
+}
+.oc-info .oc-detail.ca {
+  color: var(--green-700);
+}
+.oc-info .oc-detail.foreign {
+  color: var(--amber-700);
+}
+
+/* ---------- Comparison card ---------- */
+.cmp-card {
+  background: var(--white);
+  border: 1px solid var(--warm-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.cmp-title {
+  padding: 10px 14px 6px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warm-900);
+}
+.cmp-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.cmp-col {
+  padding: 10px 14px 14px;
+}
+.cmp-col:first-child {
+  border-right: 1px solid var(--warm-100);
+}
+.cmp-col.ca-col {
+  background: var(--green-50);
+}
+.cmp-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.cmp-col:first-child .cmp-label {
+  color: var(--amber-700);
+}
+.cmp-col.ca-col .cmp-label {
+  color: var(--green-700);
+}
+.cmp-pname {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--warm-900);
+  margin-bottom: 2px;
+}
+.cmp-pbrand {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 8px;
+}
+.cmp-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 11.5px;
+  border-top: 1px solid var(--warm-100);
+}
+.cmp-row .l {
+  color: #999;
+}
+.cmp-row .v {
+  font-weight: 600;
+  color: var(--warm-900);
+}
+.cmp-row .v.good {
+  color: var(--green-700);
+}
+.cmp-note {
+  margin: 8px 14px 12px;
+  padding: 6px 10px;
+  background: var(--green-50);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--green-700);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ---------- Story card ---------- */
+.story-sb {
+  background: linear-gradient(135deg, var(--warm-50), #fff8f0);
+  border: 1px solid var(--warm-200);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: var(--shadow-soft);
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.story-sb .st-hd {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warm-900);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.story-sb .st-body {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--warm-800);
+}
+.story-sb .st-loc {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--red-700);
+  font-weight: 500;
+}
+
+/* ---------- QA buttons ---------- */
+.qa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.qa-btn {
+  padding: 5px 11px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--warm-200);
+  background: var(--white);
+  font-size: 11.5px;
+  color: var(--warm-800);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.12s;
+}
+.qa-btn:hover {
+  border-color: var(--red-500);
+  color: var(--red-600);
+  background: var(--red-50);
+}
+
+/* ---------- Badge card ---------- */
+.badge-card {
+  background: linear-gradient(145deg, #fff 0%, #fff7f7 50%, #fff 100%);
+  border: 2px solid var(--red-600);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(127, 29, 29, 0.12);
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.badge-card .b-maple {
+  font-size: 30px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 4px rgba(185, 28, 28, 0.2));
+}
+.badge-card .b-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--red-700);
+}
+.badge-card .b-prod {
+  font-size: 12px;
+  color: var(--warm-800);
+  margin-top: 2px;
+}
+.badge-card .b-loc {
+  font-size: 10px;
+  color: var(--red-500);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.badge-card .b-line {
+  width: 30px;
+  height: 2px;
+  background: var(--red-600);
+  border-radius: 2px;
+  margin: 8px auto 0;
+}
+
+/* ---------- Generate badge button ---------- */
+.gen-badge {
+  width: 100%;
+  padding: 9px;
+  background: var(--red-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.gen-badge:hover {
+  background: var(--red-700);
+}
+
+/* ---------- Typing indicator ---------- */
+.typing {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+  animation: fadeUp 0.2s ease forwards;
+  opacity: 0;
+}
+.td {
+  width: 6px;
+  height: 6px;
+  background: var(--warm-300);
+  border-radius: 50%;
+  animation: tb 1.2s infinite;
+}
+.td:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.td:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes tb {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ---------- Coming soon banner ---------- */
+.cf-coming-soon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: linear-gradient(90deg, #fef3c7, #fff7ed);
+  border-bottom: 1px solid #fde68a;
+  font-size: 11px;
+  color: var(--amber-700);
+  flex-shrink: 0;
+}
+.cf-coming-soon-icon {
+  font-size: 13px;
+}
+.cf-coming-soon-text {
+  font-weight: 500;
+}
+
+/* ---------- Mock response label ---------- */
+.m-mock-label {
+  font-size: 9px;
+  color: var(--warm-300);
+  margin-top: 3px;
+  padding-left: 4px;
+  font-style: italic;
+}

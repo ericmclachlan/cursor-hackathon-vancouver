@@ -1,0 +1,120 @@
+{
+  "Folgers": {
+    "canadian": false,
+    "flag": "🇺🇸",
+    "owner": "J.M. Smucker Co.",
+    "hq": "Orrville, Ohio, USA",
+    "alt": {
+      "name": "Kicking Horse — Kick Ass Dark Roast",
+      "brand": "Kicking Horse Coffee",
+      "shortName": "Kicking Horse",
+      "province": "BC",
+      "price": "$11.49 / 454g",
+      "pricePerG": "$2.53/100g",
+      "shipping": "Free (Prime)",
+      "origin": "Invermere, BC",
+      "story": "Founded in 1996 by Elana Rosenfeld and Leo Johnson in Invermere, BC — a small mountain town in the Canadian Rockies. They started roasting in their garage and built one of Canada's most beloved coffee brands. Every batch is still roasted with a view of the Rocky Mountains. Certified organic & fair trade.",
+      "storyLoc": "Invermere, BC — heart of the Canadian Rockies",
+      "storyHook": "Organic coffee roasted in the Rockies since '96 — from a garage to a Canadian icon.",
+      "scenicImg": "linear-gradient(135deg, #2d6a4f 0%, #74c69d 40%, #95d5b2 60%, #d8f3dc 100%)",
+      "scenicLabel": "🏔️ Canadian Rockies, BC",
+      "producerImg": "linear-gradient(135deg, #5c3a22 0%, #8b6f47 50%, #c9a96e 100%)",
+      "producerLabel": "☕ Elana & Leo, Founders"
+    }
+  },
+  "Starbucks": {
+    "canadian": false,
+    "flag": "🇺🇸",
+    "owner": "Starbucks Corporation",
+    "hq": "Seattle, Washington, USA",
+    "alt": {
+      "name": "Salt Spring Moka Java",
+      "brand": "Salt Spring Coffee",
+      "shortName": "Salt Spring",
+      "province": "BC",
+      "price": "$14.99 / 400g",
+      "pricePerG": "$3.75/100g",
+      "shipping": "Free (Prime)",
+      "origin": "Salt Spring Island, BC",
+      "story": "Born on Salt Spring Island in 1996, this small-batch roaster was one of Canada's first certified organic, fair trade coffee companies. They're a B Corp with deep commitment to social and environmental responsibility. Beans roasted on the island and shipped fresh.",
+      "storyLoc": "Salt Spring Island, BC — Gulf Islands",
+      "storyHook": "Small-batch organic roasting on a Gulf Island — B Corp, fair trade, shipped fresh.",
+      "scenicImg": "linear-gradient(135deg, #0077b6 0%, #00b4d8 40%, #90e0ef 70%, #caf0f8 100%)",
+      "scenicLabel": "🏝️ Salt Spring Island, BC",
+      "producerImg": "linear-gradient(135deg, #264653 0%, #2a9d8f 50%, #e9c46a 100%)",
+      "producerLabel": "🌿 Island Roastery Team"
+    }
+  },
+  "Lavazza": {
+    "canadian": false,
+    "flag": "🇮🇹",
+    "owner": "Luigi Lavazza S.p.A.",
+    "hq": "Turin, Italy",
+    "alt": {
+      "name": "Ethical Bean Lush Medium-Dark",
+      "brand": "Ethical Bean Coffee",
+      "shortName": "Ethical Bean",
+      "province": "BC",
+      "price": "$13.99 / 340g",
+      "pricePerG": "$4.11/100g",
+      "shipping": "Free (Prime)",
+      "origin": "Vancouver, BC",
+      "story": "Founded in Vancouver in 2003, Ethical Bean was one of the first carbon-neutral coffee companies in North America. Every bag has a QR code so you can trace your coffee from farm to cup. They roast in small batches in East Vancouver and are 100% fair trade certified.",
+      "storyLoc": "Vancouver, BC — East Van roastery",
+      "storyHook": "Canada's first carbon-neutral coffee — trace every bag from farm to cup via QR code.",
+      "scenicImg": "linear-gradient(135deg, #4a6741 0%, #7ea172 40%, #a3c293 70%, #d4e7cb 100%)",
+      "scenicLabel": "🌇 East Vancouver, BC",
+      "producerImg": "linear-gradient(135deg, #6d4c41 0%, #8d6e63 50%, #bcaaa4 100%)",
+      "producerLabel": "♻️ Ethical Bean Roasters"
+    }
+  },
+  "Kicking Horse": {
+    "canadian": true,
+    "flag": "🇨🇦",
+    "owner": "Kicking Horse Coffee Co.",
+    "hq": "Invermere, British Columbia",
+    "story": "One of Canada's most iconic coffee brands! Founded in 1996 in the Rocky Mountain town of Invermere, BC. They roast organic, fair trade beans at their mountain facility. From a garage operation to a national favourite.",
+    "storyHook": "Organic coffee roasted in the Rockies since 1996 — from a garage to a Canadian icon.",
+    "storyLoc": "Invermere, BC — Canadian Rockies",
+    "scenicImg": "linear-gradient(135deg, #2d6a4f 0%, #74c69d 40%, #95d5b2 60%, #d8f3dc 100%)",
+    "scenicLabel": "🏔️ Canadian Rockies, BC",
+    "producerImg": "linear-gradient(135deg, #5c3a22 0%, #8b6f47 50%, #c9a96e 100%)",
+    "producerLabel": "☕ Elana & Leo, Founders"
+  },
+  "Tim Hortons": {
+    "canadian": true,
+    "flag": "🇨🇦",
+    "owner": "Restaurant Brands International",
+    "hq": "Toronto, Ontario",
+    "story": "A true Canadian institution! Founded in 1964 by hockey player Tim Horton in Hamilton, Ontario. Now headquartered in Toronto. Tim Hortons is woven into Canadian culture from coast to coast.",
+    "storyHook": "Founded by hockey legend Tim Horton in 1964 — Canada's coffee, coast to coast.",
+    "storyLoc": "Toronto, ON — founded in Hamilton, 1964",
+    "scenicImg": "linear-gradient(135deg, #c9184a 0%, #ff4d6d 40%, #ff758f 70%, #ffccd5 100%)",
+    "scenicLabel": "🍩 Iconic Canadian brand",
+    "producerImg": "linear-gradient(135deg, #3a0ca3 0%, #4361ee 50%, #4cc9f0 100%)",
+    "producerLabel": "🏒 Tim Horton, Founder"
+  },
+  "Nescafé": {
+    "canadian": false,
+    "flag": "🇨🇭",
+    "owner": "Nestlé S.A.",
+    "hq": "Vevey, Switzerland",
+    "alt": {
+      "name": "Pilot Coffee Voyage Blend",
+      "brand": "Pilot Coffee Roasters",
+      "shortName": "Pilot Coffee",
+      "province": "ON",
+      "price": "$18.00 / 300g",
+      "pricePerG": "$6.00/100g",
+      "shipping": "$5.99",
+      "origin": "Toronto, ON",
+      "story": "Pilot Coffee started in 2009 in Toronto's east end, founded by friends passionate about specialty coffee. They operate multiple cafés across Toronto and roast all their beans in-house. Known for meticulous sourcing and small-batch quality.",
+      "storyLoc": "Toronto, ON — Leslieville roastery",
+      "storyHook": "Small-batch specialty roasting from Toronto's east end since 2009 — café culture meets craft.",
+      "scenicImg": "linear-gradient(135deg, #1d3557 0%, #457b9d 40%, #a8dadc 70%, #f1faee 100%)",
+      "scenicLabel": "🏙️ Leslieville, Toronto",
+      "producerImg": "linear-gradient(135deg, #3d405b 0%, #81b29a 50%, #f2cc8f 100%)",
+      "producerLabel": "☕ Pilot Roasting Team"
+    }
+  }
+}

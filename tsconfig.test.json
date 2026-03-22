@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["ES2017", "DOM"],
+    "types": ["chrome", "jest", "node"],
+    "module": "commonjs",
+    "outDir": "./dist-test",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
+  "include": ["extention/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
