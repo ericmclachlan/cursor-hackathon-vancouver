@@ -22,7 +22,7 @@ Content Script (on Amazon.ca)          Background SW           Side Panel
                                                                Call Backend API
                                                                      │
                                                           ┌──────────▼──────────┐
-                                                          │  Backend (FastAPI)   │
+                                                          │  Backend (Hono/Bun)  │
                                                           │  Brand lookup + LLM  │
                                                           │  via OpenRouter      │
                                                           └─────────────────────┘
@@ -52,9 +52,9 @@ extention/
     sidepanel.css        # NEW: sidebar CSS from prototype
     sidepanel.ts         # NEW: chat UI, cards, flows, API calls
 backend/
-  main.py                # NEW: FastAPI server
-  prompts.py             # NEW: LLM prompt templates
-  requirements.txt       # NEW: fastapi, uvicorn, httpx
+  server.ts              # NEW: Hono server (Bun runtime)
+  prompts.ts             # NEW: LLM prompt templates
+  package.json           # NEW: hono, openai
 ```
 
 ---
@@ -178,14 +178,14 @@ Delivers the complete frontend — content script tags, popouts, side panel UI �
 
 ### Backend Server
 
-1. **Scaffold FastAPI backend** (`backend/main.py`)
+1. **Scaffold Hono backend** (`backend/server.ts`)
    - `POST /api/chat` — receives `{ brandKey, message, history }`, returns agent response
    - `GET /api/brand/{name}` — returns brand data
    - `POST /api/compare` — returns structured comparison
    - Load brands from JSON at startup
    - Add CORS middleware for extension access
 
-2. **Write prompt templates** (`backend/prompts.py`)
+2. **Write prompt templates** (`backend/prompts.ts`)
    - System prompt: CanadaFirst agent persona (friendly, warm, knowledgeable)
    - Origin classification, comparison, storytelling, follow-up prompts
 
@@ -257,9 +257,9 @@ The `docs/frontend_reference.html` file contains ALL the UI code. Here's what to
 - `extention/sidepanel/sidepanel.html` — Side panel shell
 - `extention/sidepanel/sidepanel.css` — Side panel styles
 - `extention/sidepanel/sidepanel.ts` — Side panel logic
-- `backend/main.py` — FastAPI server
-- `backend/prompts.py` — LLM prompts
-- `backend/requirements.txt` — Python dependencies
+- `backend/server.ts` — Hono server (Bun runtime)
+- `backend/prompts.ts` — LLM prompts
+- `backend/package.json` — Bun dependencies
 
 ---
 

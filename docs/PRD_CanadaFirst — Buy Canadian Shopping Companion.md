@@ -297,7 +297,7 @@ The extension follows a progressive disclosure pattern that respects the user's 
 - **Popout Rendering:** Popout cards are rendered by the content script as absolutely-positioned DOM elements on the host page. They are shown/hidden via hover events with a 200ms debounce timer. Popout content (photos, story hooks) is bundled in the content script's brand data.
 - **Content Script → Sidebar Communication:** When a user clicks a popout CTA, the content script sends a `chrome.runtime.sendMessage` with the brand key. The sidebar panel listens for this message and triggers the appropriate agent flow.
 - **Mock Data:** A JSON file containing ~20–50 brand entries across two categories (coffee, honey/maple syrup). Each entry includes: brand name, owner, is_canadian (boolean), headquarters, country flag, price, origin_city, origin_province, story (2–3 sentences), story_hook (1 sentence), scenic_img_url, producer_img_url, and (for non-Canadian brands) an alternative_brand reference.
-- **Backend:** A lightweight Python (Flask/FastAPI) or Node.js server. Receives the brand name from the sidebar, looks up the mock data, constructs a prompt with context, sends it to the LLM, and returns the structured response.
+- **Backend:** A lightweight Node.js server (Hono framework, Bun runtime). Receives the brand name from the sidebar, looks up the mock data, constructs a prompt with context, sends it to the LLM, and returns the structured response.
 - **Badge Generation:** Rendered as a styled HTML card in the sidebar. "Download" functionality (nice-to-have) can use html2canvas to convert to PNG.
 
 ### Suggested Task Division
