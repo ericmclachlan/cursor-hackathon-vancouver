@@ -49,10 +49,23 @@ let popoutEl: HTMLDivElement | null = null;
 // TAG CREATION
 // ================================================================
 
+const MAPLE_LEAF_PATH =
+  "m-90 2030 45-863a95 95 0 0 0-111-98l-859 151 116-320a65 65 0 0 0-20-73" +
+  "l-941-762 212-99a65 65 0 0 0 34-79l-186-572 542 115a65 65 0 0 0 73-38" +
+  "l105-247 423 454a65 65 0 0 0 111-57l-204-1052 327 189a65 65 0 0 0 91-27" +
+  "l332-652 332 652a65 65 0 0 0 91 27l327-189-204 1052a65 65 0 0 0 111 57" +
+  "l423-454 105 247a65 65 0 0 0 73 38l542-115-186 572a65 65 0 0 0 34 79" +
+  "l212 99-941 762a65 65 0 0 0-20 73l116 320-859-151a95 95 0 0 0-111 98" +
+  "l45 863z";
+
+function mapleLeafSvg(fill: string): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="-2015 -2000 4030 4030" style="vertical-align:middle;margin-left:2px;display:inline-block" aria-hidden="true"><path fill="${fill}" d="${MAPLE_LEAF_PATH}"/></svg>`;
+}
+
 function createMapleTag(brandKey: string): HTMLSpanElement {
   const tag = document.createElement("span");
   tag.className = "cf-tag-maple cf-tag-animate";
-  tag.textContent = "\u{1F341}";
+  tag.innerHTML = mapleLeafSvg("#D52B1E");
   tag.dataset.brand = brandKey;
   tag.addEventListener("click", (e) => {
     e.preventDefault();
@@ -65,7 +78,7 @@ function createMapleTag(brandKey: string): HTMLSpanElement {
 function createRecTag(brandKey: string, alt: BrandAlt): HTMLSpanElement {
   const tag = document.createElement("span");
   tag.className = "cf-tag-rec cf-tag-animate";
-  tag.innerHTML = `<span class="cf-tag-leaf">\u{1F341}</span>${alt.shortName}, ${alt.province}`;
+  tag.innerHTML = `<span class="cf-tag-leaf">${mapleLeafSvg("#999999")}</span>${alt.shortName}, ${alt.province}`;
   tag.dataset.brand = brandKey;
   tag.addEventListener("click", (e) => {
     e.preventDefault();
