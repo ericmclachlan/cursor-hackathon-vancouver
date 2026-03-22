@@ -6,8 +6,14 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["config.js", "content.js"],
+      "js": ["trie.js", "content.js"],
       "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["config.json"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
