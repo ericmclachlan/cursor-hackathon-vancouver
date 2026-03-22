@@ -21,11 +21,15 @@ function highlightTextNode(textNode: Text, trie: Trie, config: HighlightConfig):
     }
 
     const mark = document.createElement("mark");
-    mark.style.backgroundColor = config.color;
+    mark.style.background = "none";
     mark.style.color = "inherit";
-    mark.textContent = text.slice(index, index + length) + config.annotation;
-    fragment.appendChild(mark);
+    mark.textContent = text.slice(index, index + length);
 
+    const icon = document.createElement("span");
+    icon.innerHTML = config.annotation;
+    mark.appendChild(icon);
+
+    fragment.appendChild(mark);
     lastIndex = index + length;
   }
 
@@ -59,14 +63,43 @@ function walkTextNodes(root: Node, trie: Trie, config: HighlightConfig): void {
 async function init(): Promise<void> {
   const url = chrome.runtime.getURL("config.json");
   const response = await fetch(url);
-  const config: HighlightConfig = await response.json();
+  const configs: HighlightConfig[] = await response.json();
 
-  const trie = new Trie();
-  for (const word of config.words) {
-    trie.insert(word);
+  const tries = configs.map((config) => {
+    const trie = new Trie();
+    for (const word of config.words) {
+      trie.insert(word);
+    }
+    return { trie, config };
+  });
+
+  function annotate(root: Node): void {
+    for (const { trie, config } of tries) {
+      walkTextNodes(root, trie, config);
+    }
   }
 
-  walkTextNodes(document.body, trie, config);
+  // Initial pass over the fully-loaded document.
+  annotate(document.body);
+
+  // Watch for nodes added dynamically (infinite scroll, SPA navigation, lazy
+  // renders, etc.) and annotate each new subtree as it arrives.
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of Array.from(mutation.addedNodes)) {
+        // Only process element nodes; skip text/comment nodes added directly
+        // since their parent element will be processed when it was added, or
+        // they are already covered by the initial pass.
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          // Skip nodes we already annotated (e.g. our own <mark> insertions).
+          if ((node as Element).tagName === "MARK") continue;
+          annotate(node);
+        }
+      }
+    }
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 init();

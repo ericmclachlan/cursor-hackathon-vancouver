@@ -2,9 +2,9 @@
 
 This repository was created for the [Cursor Hackathon Vancouver](https://luma.com/fb1187s1?tk=EeXtWX) event held on March 22nd, 2026.
 
-## Word Highlighter Extension
+## Moople Extension
 
-A Chrome extension that highlights configurable words and phrases on every page and appends a 🍁 maple leaf. Matching is powered by a Trie data structure for efficient multi-pattern lookup.
+A Chrome extension that highlights Canadian brands on every page and appends a 🍁 maple leaf, helping you shop local. Matching is powered by a Trie data structure for efficient multi-pattern lookup.
 
 ### Build
 
@@ -33,7 +33,7 @@ The compiled extension will be in the `dist/` folder.
 
 ### Reload after changes
 
-After editing the TypeScript source and rebuilding, go back to `chrome://extensions` and click the reload button (↺) on the Word Highlighter card, then refresh any open tabs.
+After editing the TypeScript source and rebuilding, go back to `chrome://extensions` and click the reload button (↺) on the Moople card, then refresh any open tabs.
 
 ### Customise
 

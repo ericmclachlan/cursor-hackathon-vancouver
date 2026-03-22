@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Word Highlighter",
+  "name": "Moople",
   "version": "1.0.0",
-  "description": "Highlights a configurable word on every page.",
+  "description": "Moople highlights Canadian brands on every page so you can shop local.",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

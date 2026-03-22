@@ -1,28 +1,25 @@
-const WORD_PATTERN = new RegExp(`\\b(${HIGHLIGHT_WORD})\\b`, "gi");
-
-function highlightTextNode(textNode) {
+function highlightTextNode(textNode, trie, config) {
   const text = textNode.nodeValue;
-  if (!WORD_PATTERN.test(text)) return;
+  if (!text) return;
 
-  // Reset lastIndex since test() advances it
-  WORD_PATTERN.lastIndex = 0;
+  const matches = trie.findMatches(text);
+  if (matches.length === 0) return;
 
   const fragment = document.createDocumentFragment();
   let lastIndex = 0;
-  let match;
 
-  while ((match = WORD_PATTERN.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+  for (const { index, length } of matches) {
+    if (index > lastIndex) {
+      fragment.appendChild(document.createTextNode(text.slice(lastIndex, index)));
     }
 
     const mark = document.createElement("mark");
-    mark.style.backgroundColor = HIGHLIGHT_COLOR;
+    mark.style.backgroundColor = config.color;
     mark.style.color = "inherit";
-    mark.textContent = match[0] + "🍁";
+    mark.textContent = text.slice(index, index + length) + config.annotation;
     fragment.appendChild(mark);
 
-    lastIndex = WORD_PATTERN.lastIndex;
+    lastIndex = index + length;
   }
 
   if (lastIndex < text.length) {
@@ -32,14 +29,14 @@ function highlightTextNode(textNode) {
   textNode.parentNode.replaceChild(fragment, textNode);
 }
 
-function walkTextNodes(root) {
+function walkTextNodes(root, trie, config) {
   const walker = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT,
     {
       acceptNode(node) {
         const tag = node.parentElement?.tagName;
-        if (["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "MARK"].includes(tag)) {
+        if (["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "MARK"].includes(tag ?? "")) {
           return NodeFilter.FILTER_REJECT;
         }
         return NodeFilter.FILTER_ACCEPT;
@@ -49,7 +46,20 @@ function walkTextNodes(root) {
 
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
-  nodes.forEach(highlightTextNode);
+  nodes.forEach((node) => highlightTextNode(node, trie, config));
 }
 
-walkTextNodes(document.body);
+async function init() {
+  const url = chrome.runtime.getURL("config.json");
+  const response = await fetch(url);
+  const config = await response.json();
+
+  const trie = new Trie();
+  for (const word of config.words) {
+    trie.insert(word);
+  }
+
+  walkTextNodes(document.body, trie, config);
+}
+
+init();
