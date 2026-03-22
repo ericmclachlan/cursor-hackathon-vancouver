@@ -4,7 +4,7 @@ This repository was created for the [Cursor Hackathon Vancouver](https://luma.co
 
 ## Word Highlighter Extension
 
-A Chrome extension that highlights the word "your" on every page and appends a 🍁 maple leaf.
+A Chrome extension that highlights configurable words and phrases on every page and appends a 🍁 maple leaf. Matching is powered by a Trie data structure for efficient multi-pattern lookup.
 
 ### Build
 
@@ -29,7 +29,7 @@ The compiled extension will be in the `dist/` folder.
 2. Enable **Developer mode** (toggle in the top-right corner)
 3. Click **Load unpacked**
 4. Select the `dist/` folder from this repository
-5. The extension is now active — visit any webpage and words matching "your" will be highlighted in gold with a 🍁
+5. The extension is now active — visit any webpage and words/phrases in the configured list will be highlighted in gold with a 🍁
 
 ### Reload after changes
 
@@ -37,7 +37,7 @@ After editing the TypeScript source and rebuilding, go back to `chrome://extensi
 
 ### Customise
 
-Edit [`extention/config.ts`](extention/config.ts) to change the highlighted word or colour, then rebuild.
+Edit [`extention/config.ts`](extention/config.ts) to add or remove words/phrases from `HIGHLIGHT_WORDS`, or change the highlight colour, then rebuild.
 
 ## Team
 
