@@ -1,0 +1,268 @@
+/* ================================================================
+   CanadaFirst — Content Script Styles
+   All classes prefixed with cf- to avoid host page conflicts
+   ================================================================ */
+
+:root {
+  --cf-red-800: #991b1b;
+  --cf-red-700: #b91c1c;
+  --cf-red-600: #dc2626;
+  --cf-red-500: #ef4444;
+  --cf-red-100: #fee2e2;
+  --cf-red-50: #fef2f2;
+  --cf-warm-50: #faf8f5;
+  --cf-warm-100: #f3efe8;
+  --cf-warm-200: #e8e0d4;
+  --cf-warm-300: #d4c8b8;
+  --cf-warm-400: #a89a8a;
+  --cf-warm-800: #3d3229;
+  --cf-warm-900: #2a231c;
+  --cf-green-800: #166534;
+  --cf-green-700: #15803d;
+  --cf-green-600: #16a34a;
+  --cf-green-100: #dcfce7;
+  --cf-green-50: #f0fdf4;
+  --cf-amber-700: #b45309;
+  --cf-amber-100: #fef3c7;
+  --cf-white: #ffffff;
+  --cf-font-display: "Fraunces", Georgia, serif;
+  --cf-font-body: "DM Sans", system-ui, sans-serif;
+  --cf-radius-sm: 8px;
+  --cf-radius-md: 14px;
+  --cf-radius-lg: 20px;
+  --cf-radius-full: 9999px;
+  --cf-shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --cf-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --cf-shadow-popout: 0 12px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* ================================================================
+   TAGS — maple leaf + recommendation
+   ================================================================ */
+
+/* ---------- Canadian maple tag ---------- */
+.cf-tag-maple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  vertical-align: middle;
+  position: relative;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.15s;
+  user-select: none;
+  background: var(--cf-green-50);
+  border: 1px solid var(--cf-green-100);
+}
+.cf-tag-maple:hover {
+  transform: scale(1.2);
+  background: var(--cf-green-100);
+}
+
+/* ---------- Recommendation tag ---------- */
+.cf-tag-rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px 2px 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--cf-red-700);
+  background: var(--cf-red-50);
+  border: 1px solid var(--cf-red-100);
+  border-radius: var(--cf-radius-full);
+  cursor: pointer;
+  vertical-align: middle;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  letter-spacing: -0.1px;
+}
+.cf-tag-rec:hover {
+  background: var(--cf-red-100);
+  border-color: var(--cf-red-500);
+  transform: scale(1.05);
+}
+.cf-tag-rec .cf-tag-leaf {
+  font-size: 11px;
+}
+
+/* Tag appear animation */
+@keyframes cfTagPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.cf-tag-animate {
+  animation: cfTagPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ================================================================
+   POPOUT CARD
+   ================================================================ */
+.cf-popout {
+  position: absolute;
+  z-index: 2147483640;
+  width: 300px;
+  background: var(--cf-white);
+  border-radius: var(--cf-radius-md);
+  box-shadow: var(--cf-shadow-popout);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  font-family: var(--cf-font-body);
+}
+.cf-popout.cf-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.cf-popout-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.cf-popout-close:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cf-popout-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 110px;
+  overflow: hidden;
+}
+.cf-popout-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+}
+.cf-popout-photo.cf-scenic {
+  border-right: 1px solid var(--cf-warm-100);
+}
+
+.cf-popout-body {
+  padding: 12px 14px;
+}
+.cf-popout-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--cf-radius-full);
+  margin-bottom: 6px;
+}
+.cf-popout-name {
+  font-family: var(--cf-font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cf-warm-900);
+  margin-bottom: 2px;
+}
+.cf-popout-loc {
+  font-size: 11px;
+  color: var(--cf-warm-400);
+  margin-bottom: 8px;
+}
+.cf-popout-replaces {
+  font-size: 11px;
+  color: var(--cf-warm-400);
+  margin-bottom: 6px;
+}
+.cf-popout-story {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--cf-warm-800);
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cf-popout-cta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cf-red-600);
+  cursor: pointer;
+  transition: color 0.15s;
+  border: none;
+  background: none;
+  font-family: var(--cf-font-body);
+  padding: 0;
+}
+.cf-popout-cta:hover {
+  color: var(--cf-red-800);
+}
+.cf-popout-cta .cf-arrow {
+  transition: transform 0.15s;
+}
+.cf-popout-cta:hover .cf-arrow {
+  transform: translateX(3px);
+}
+
+/* ================================================================
+   SCAN LINE
+   ================================================================ */
+.cf-scan-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--cf-red-500), transparent);
+  z-index: 2147483647;
+  animation: cfScanDown 1.6s ease-out forwards;
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes cfScanDown {
+  0% {
+    top: 0;
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}

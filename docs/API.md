@@ -237,9 +237,9 @@ Content Script ──UPDATE_BADGE──▶ Background Service Worker
 
 ## 3. Backend REST API
 
-**Base URL**: `http://localhost:8000` (development)
+**Base URL**: `http://localhost:3000` (development)
 
-**Framework**: FastAPI (Python)
+**Framework**: Hono (Node.js / Bun)
 
 **Auth**: None (hackathon MVP)
 
@@ -468,4 +468,4 @@ Brand keys must match how the brand appears on product pages (case-sensitive for
 | `content.ts` | Eric | `brands.json` | `OPEN_SIDEBAR`, `UPDATE_BADGE` messages |
 | `background.ts` | Eric | `OPEN_SIDEBAR`, `UPDATE_BADGE` | `BRAND_CONTEXT`, badge updates |
 | `sidepanel.ts` | Sylvia | `BRAND_CONTEXT`, `/api/chat` response | `/api/chat` requests, UI cards |
-| `backend/main.py` | Dako | `/api/chat` request, `brands.json` | `/api/chat` response |
+| `backend/server.ts` | Dako | `/api/chat` request, `brands.json` | `/api/chat` response |
