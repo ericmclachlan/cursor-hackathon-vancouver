@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["ES2017", "DOM"],
+    "types": ["chrome"],
+    "module": "None",
+    "outDir": "dist",
+    "rootDir": "extention",
+    "strict": true,
+    "noEmitOnError": true
+  },
+  "include": ["extention/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

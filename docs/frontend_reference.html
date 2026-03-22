@@ -1,0 +1,1725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CanadaFirst — v3 Prototype</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================================
+   DESIGN SYSTEM
+   ================================================================ */
+      :root {
+        --red-800: #991b1b;
+        --red-700: #b91c1c;
+        --red-600: #dc2626;
+        --red-500: #ef4444;
+        --red-100: #fee2e2;
+        --red-50: #fef2f2;
+        --warm-50: #faf8f5;
+        --warm-100: #f3efe8;
+        --warm-200: #e8e0d4;
+        --warm-300: #d4c8b8;
+        --warm-400: #a89a8a;
+        --warm-800: #3d3229;
+        --warm-900: #2a231c;
+        --green-800: #166534;
+        --green-700: #15803d;
+        --green-600: #16a34a;
+        --green-100: #dcfce7;
+        --green-50: #f0fdf4;
+        --amber-700: #b45309;
+        --amber-100: #fef3c7;
+        --white: #ffffff;
+        --font-display: "Fraunces", Georgia, serif;
+        --font-body: "DM Sans", system-ui, sans-serif;
+        --radius-sm: 8px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --radius-full: 9999px;
+        --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.06);
+        --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+        --shadow-popout:
+          0 12px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        --sidebar-w: 380px;
+        --topbar-h: 42px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: var(--font-body);
+        background: #d8d0c4;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ================================================================
+   SHELL
+   ================================================================ */
+      .shell {
+        width: 1220px;
+        height: 710px;
+        background: var(--white);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow:
+          0 30px 90px rgba(0, 0, 0, 0.22),
+          0 0 0 1px rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        height: var(--topbar-h);
+        background: #f5f5f5;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+      }
+      .dot.r {
+        background: #ff5f57;
+      }
+      .dot.y {
+        background: #ffbd2e;
+      }
+      .dot.g {
+        background: #28c840;
+      }
+      .url-bar {
+        flex: 1;
+        margin-left: 10px;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 4px 12px;
+        font-size: 12px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        user-select: none;
+      }
+      .url-bar .lock {
+        color: #28c840;
+        font-size: 10px;
+      }
+      .ext-icon {
+        width: 28px;
+        height: 28px;
+        background: var(--red-600);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.15s;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .ext-icon:hover {
+        transform: scale(1.08);
+      }
+      .ext-icon span {
+        font-size: 15px;
+      }
+      .ext-badge-count {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        min-width: 16px;
+        height: 16px;
+        background: var(--red-600);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        border-radius: 99px;
+        border: 2px solid #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 3px;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .content-area {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* ================================================================
+   PAGE
+   ================================================================ */
+      .page {
+        flex: 1;
+        overflow-y: auto;
+        background: var(--white);
+        transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .page::-webkit-scrollbar {
+        width: 6px;
+      }
+      .page::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+      }
+
+      .page-nav {
+        height: 46px;
+        background: #131921;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 16px;
+      }
+      .page-nav .logo-text {
+        color: white;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .page-nav .logo-text .ca {
+        color: #ff9900;
+        font-size: 12px;
+      }
+      .page-nav .search-fake {
+        flex: 1;
+        height: 30px;
+        background: var(--white);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        font-size: 12px;
+        color: #999;
+      }
+      .page-nav .cart-icon {
+        color: white;
+        font-size: 20px;
+        cursor: default;
+      }
+      .page-subnav {
+        height: 34px;
+        background: #232f3e;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 16px;
+      }
+      .page-subnav a {
+        color: #ddd;
+        font-size: 12px;
+        text-decoration: none;
+        cursor: default;
+      }
+
+      .product-area {
+        padding: 24px 28px;
+      }
+      .product-area h2 {
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 400;
+        color: #555;
+        margin-bottom: 18px;
+      }
+      .product-area h2 strong {
+        color: #c45500;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+
+      .product-card {
+        border: 1px solid #e8e8e8;
+        border-radius: 10px;
+        padding: 16px;
+        background: var(--white);
+        transition: box-shadow 0.2s;
+        cursor: default;
+        position: relative;
+      }
+      .product-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .pc-img {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 52px;
+        margin-bottom: 12px;
+      }
+      .pc-title {
+        font-size: 13px;
+        color: #0f1111;
+        line-height: 1.4;
+        margin-bottom: 6px;
+        min-height: 36px;
+      }
+      .pc-brand {
+        font-size: 11.5px;
+        color: #888;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .pc-rating {
+        font-size: 12px;
+        color: #de7921;
+        margin-bottom: 4px;
+      }
+      .pc-price {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0f1111;
+      }
+      .pc-price .sym {
+        font-size: 12px;
+        vertical-align: top;
+        line-height: 1.8;
+      }
+      .pc-price .cents {
+        font-size: 12px;
+        vertical-align: top;
+        line-height: 1.8;
+      }
+      .pc-delivery {
+        font-size: 11px;
+        color: #565959;
+        margin-top: 4px;
+      }
+
+      /* ================================================================
+   TAGS — maple leaf + recommendation
+   ================================================================ */
+
+      /* ---------- Canadian maple tag ---------- */
+      .tag-maple {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 5px;
+        vertical-align: middle;
+        position: relative;
+        transition:
+          transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+          background 0.15s;
+        user-select: none;
+        background: var(--green-50);
+        border: 1px solid var(--green-100);
+      }
+      .tag-maple:hover {
+        transform: scale(1.2);
+        background: var(--green-100);
+      }
+
+      /* ---------- Recommendation tag ---------- */
+      .tag-rec {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 8px 2px 5px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--red-700);
+        background: var(--red-50);
+        border: 1px solid var(--red-100);
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        vertical-align: middle;
+        white-space: nowrap;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        user-select: none;
+        letter-spacing: -0.1px;
+      }
+      .tag-rec:hover {
+        background: var(--red-100);
+        border-color: var(--red-500);
+        transform: scale(1.05);
+      }
+      .tag-rec .tag-leaf {
+        font-size: 11px;
+      }
+
+      /* Tag appear animation */
+      @keyframes tagPop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.15);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .tag-animate {
+        animation: tagPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      /* ================================================================
+   POPOUT CARD (Canadian brands only)
+   ================================================================ */
+      .popout {
+        position: absolute;
+        z-index: 100;
+        width: 300px;
+        background: var(--white);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-popout);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(4px);
+        pointer-events: none;
+        transition:
+          opacity 0.2s,
+          transform 0.2s;
+      }
+      .popout.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .popout-photos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 110px;
+        overflow: hidden;
+      }
+      .popout-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background-size: cover;
+        background-position: center;
+      }
+      .popout-photo.scenic {
+        border-right: 1px solid var(--warm-100);
+      }
+
+      .popout-body {
+        padding: 12px 14px;
+      }
+      .popout-flag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--green-700);
+        background: var(--green-50);
+        padding: 2px 8px;
+        border-radius: var(--radius-full);
+        margin-bottom: 6px;
+      }
+      .popout-name {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--warm-900);
+        margin-bottom: 2px;
+      }
+      .popout-loc {
+        font-size: 11px;
+        color: var(--warm-400);
+        margin-bottom: 8px;
+      }
+      .popout-story {
+        font-size: 12px;
+        line-height: 1.55;
+        color: var(--warm-800);
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .popout-cta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--red-600);
+        cursor: pointer;
+        transition: color 0.15s;
+        border: none;
+        background: none;
+        font-family: var(--font-body);
+        padding: 0;
+      }
+      .popout-cta:hover {
+        color: var(--red-800);
+      }
+      .popout-cta .arrow {
+        transition: transform 0.15s;
+      }
+      .popout-cta:hover .arrow {
+        transform: translateX(3px);
+      }
+
+      /* ================================================================
+   SIDEBAR
+   ================================================================ */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--warm-50);
+        border-left: 1px solid var(--warm-200);
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 50;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sb-header {
+        height: 50px;
+        background: var(--white);
+        border-bottom: 1px solid var(--warm-200);
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        gap: 9px;
+        flex-shrink: 0;
+      }
+      .sb-logo {
+        width: 26px;
+        height: 26px;
+        background: var(--red-600);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .sb-name {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--warm-900);
+      }
+      .sb-close {
+        margin-left: auto;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: var(--warm-100);
+        border-radius: 6px;
+        font-size: 16px;
+        color: var(--warm-400);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+      }
+      .sb-close:hover {
+        background: var(--warm-200);
+        color: var(--warm-800);
+      }
+
+      .sb-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        scroll-behavior: smooth;
+      }
+      .sb-messages::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sb-messages::-webkit-scrollbar-thumb {
+        background: var(--warm-200);
+        border-radius: 4px;
+      }
+
+      .sb-input-bar {
+        padding: 10px 14px;
+        background: var(--white);
+        border-top: 1px solid var(--warm-200);
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .sb-input-bar input {
+        flex: 1;
+        border: 1px solid var(--warm-200);
+        border-radius: var(--radius-full);
+        padding: 8px 14px;
+        font-size: 12.5px;
+        font-family: var(--font-body);
+        color: var(--warm-900);
+        outline: none;
+        transition: border 0.2s;
+      }
+      .sb-input-bar input:focus {
+        border-color: var(--red-500);
+      }
+      .sb-input-bar input::placeholder {
+        color: var(--warm-300);
+      }
+      .sb-send {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: var(--red-600);
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+        flex-shrink: 0;
+      }
+      .sb-send:hover {
+        background: var(--red-700);
+      }
+
+      /* ---------- Sidebar message elements ---------- */
+      .m {
+        max-width: 94%;
+        animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .m.agent {
+        align-self: flex-start;
+      }
+      .m.user {
+        align-self: flex-end;
+      }
+      .m-bubble {
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--warm-900);
+      }
+      .m.agent .m-bubble {
+        background: var(--white);
+        border: 1px solid var(--warm-200);
+        border-bottom-left-radius: 4px;
+        box-shadow: var(--shadow-soft);
+      }
+      .m.user .m-bubble {
+        background: var(--red-600);
+        color: white;
+        border-bottom-right-radius: 4px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .status-badge.canadian {
+        background: var(--green-100);
+        color: var(--green-700);
+      }
+      .status-badge.foreign {
+        background: var(--amber-100);
+        color: var(--amber-700);
+      }
+
+      .origin-card {
+        background: var(--white);
+        border: 1px solid var(--warm-200);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: var(--shadow-card);
+        animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .oc-header {
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .oc-flag {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .oc-flag.ca {
+        background: var(--green-100);
+      }
+      .oc-flag.foreign {
+        background: var(--amber-100);
+      }
+      .oc-info .oc-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--warm-900);
+      }
+      .oc-info .oc-detail {
+        font-size: 11.5px;
+      }
+      .oc-info .oc-detail.ca {
+        color: var(--green-700);
+      }
+      .oc-info .oc-detail.foreign {
+        color: var(--amber-700);
+      }
+
+      .cmp-card {
+        background: var(--white);
+        border: 1px solid var(--warm-200);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: var(--shadow-card);
+        animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .cmp-title {
+        padding: 10px 14px 6px;
+        font-family: var(--font-display);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--warm-900);
+      }
+      .cmp-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .cmp-col {
+        padding: 10px 14px 14px;
+      }
+      .cmp-col:first-child {
+        border-right: 1px solid var(--warm-100);
+      }
+      .cmp-col.ca-col {
+        background: var(--green-50);
+      }
+      .cmp-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .cmp-col:first-child .cmp-label {
+        color: var(--amber-700);
+      }
+      .cmp-col.ca-col .cmp-label {
+        color: var(--green-700);
+      }
+      .cmp-pname {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--warm-900);
+        margin-bottom: 2px;
+      }
+      .cmp-pbrand {
+        font-size: 11px;
+        color: #999;
+        margin-bottom: 8px;
+      }
+      .cmp-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        font-size: 11.5px;
+        border-top: 1px solid var(--warm-100);
+      }
+      .cmp-row .l {
+        color: #999;
+      }
+      .cmp-row .v {
+        font-weight: 600;
+        color: var(--warm-900);
+      }
+      .cmp-row .v.good {
+        color: var(--green-700);
+      }
+      .cmp-note {
+        margin: 8px 14px 12px;
+        padding: 6px 10px;
+        background: var(--green-50);
+        border-radius: 6px;
+        font-size: 11px;
+        color: var(--green-700);
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .story-sb {
+        background: linear-gradient(135deg, var(--warm-50), #fff8f0);
+        border: 1px solid var(--warm-200);
+        border-radius: var(--radius-md);
+        padding: 14px;
+        box-shadow: var(--shadow-soft);
+        animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .story-sb .st-hd {
+        font-family: var(--font-display);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--warm-900);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .story-sb .st-body {
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: var(--warm-800);
+      }
+      .story-sb .st-loc {
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--red-700);
+        font-weight: 500;
+      }
+
+      .qa {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .qa-btn {
+        padding: 5px 11px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--warm-200);
+        background: var(--white);
+        font-size: 11.5px;
+        color: var(--warm-800);
+        cursor: pointer;
+        font-family: var(--font-body);
+        transition: all 0.12s;
+      }
+      .qa-btn:hover {
+        border-color: var(--red-500);
+        color: var(--red-600);
+        background: var(--red-50);
+      }
+
+      .badge-card {
+        background: linear-gradient(145deg, #fff 0%, #fff7f7 50%, #fff 100%);
+        border: 2px solid var(--red-600);
+        border-radius: var(--radius-lg);
+        padding: 20px 16px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(127, 29, 29, 0.12);
+        position: relative;
+        overflow: hidden;
+        animation: fadeUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .badge-card .b-maple {
+        font-size: 30px;
+        margin-bottom: 6px;
+        filter: drop-shadow(0 2px 4px rgba(185, 28, 28, 0.2));
+      }
+      .badge-card .b-title {
+        font-family: var(--font-display);
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--red-700);
+      }
+      .badge-card .b-prod {
+        font-size: 12px;
+        color: var(--warm-800);
+        margin-top: 2px;
+      }
+      .badge-card .b-loc {
+        font-size: 10px;
+        color: var(--red-500);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+      }
+      .badge-card .b-line {
+        width: 30px;
+        height: 2px;
+        background: var(--red-600);
+        border-radius: 2px;
+        margin: 8px auto 0;
+      }
+
+      .gen-badge {
+        width: 100%;
+        padding: 9px;
+        background: var(--red-600);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-body);
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .gen-badge:hover {
+        background: var(--red-700);
+      }
+
+      .typing {
+        display: flex;
+        gap: 4px;
+        padding: 8px 0;
+        animation: fadeUp 0.2s ease forwards;
+        opacity: 0;
+      }
+      .td {
+        width: 6px;
+        height: 6px;
+        background: var(--warm-300);
+        border-radius: 50%;
+        animation: tb 1.2s infinite;
+      }
+      .td:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .td:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      @keyframes tb {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-4px);
+        }
+      }
+
+      /* Scan line */
+      .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--red-500),
+          transparent
+        );
+        z-index: 5;
+        animation: scanDown 1.6s ease-out forwards;
+        opacity: 0;
+      }
+      @keyframes scanDown {
+        0% {
+          top: 0;
+          opacity: 0.8;
+        }
+        80% {
+          opacity: 0.4;
+        }
+        100% {
+          top: 100%;
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <div class="dot r"></div>
+        <div class="dot y"></div>
+        <div class="dot g"></div>
+        <div class="url-bar">
+          <span class="lock">🔒</span>
+          amazon.ca/s?k=coffee+ground&ref=nb_sb_noss
+        </div>
+        <div class="ext-icon" id="extIcon" title="CanadaFirst">
+          <span>🍁</span>
+          <div
+            class="ext-badge-count"
+            id="badgeCount"
+            style="transform: scale(0)"
+          >
+            0
+          </div>
+        </div>
+      </div>
+
+      <div class="content-area" id="contentArea">
+        <div class="scan-line" id="scanLine" style="display: none"></div>
+
+        <div class="page" id="page">
+          <div class="page-nav">
+            <div class="logo-text">amazon<span class="ca">.ca</span></div>
+            <div class="search-fake">🔍 coffee ground</div>
+            <div class="cart-icon">🛒</div>
+          </div>
+          <div class="page-subnav">
+            <a>Today's Deals</a><a>Customer Service</a><a>Gift Cards</a
+            ><a>Registry</a><a>Sell</a>
+          </div>
+          <div class="product-area">
+            <h2>
+              1-6 of over 2,000 results for "<strong>coffee ground</strong>"
+            </h2>
+            <div class="product-grid" id="productGrid"></div>
+          </div>
+        </div>
+
+        <!-- Popout container (positioned dynamically) -->
+        <div class="popout" id="popout"></div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+          <div class="sb-header">
+            <div class="sb-logo">🍁</div>
+            <div class="sb-name">CanadaFirst</div>
+            <button class="sb-close" id="sbClose">✕</button>
+          </div>
+          <div class="sb-messages" id="sbMessages"></div>
+          <div class="sb-input-bar">
+            <input
+              type="text"
+              id="sbInput"
+              placeholder="Ask about Canadian alternatives..."
+            />
+            <button class="sb-send" id="sbSend">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ================================================================
+      // DATA
+      // ================================================================
+      const BRANDS = {
+        Folgers: {
+          canadian: false,
+          flag: "🇺🇸",
+          owner: "J.M. Smucker Co.",
+          hq: "Orrville, Ohio, USA",
+          alt: {
+            name: "Kicking Horse — Kick Ass Dark Roast",
+            brand: "Kicking Horse Coffee",
+            shortName: "Kicking Horse",
+            province: "BC",
+            price: "$11.49 / 454g",
+            pricePerG: "$2.53/100g",
+            shipping: "Free (Prime)",
+            origin: "Invermere, BC",
+            story:
+              "Founded in 1996 by Elana Rosenfeld and Leo Johnson in Invermere, BC — a small mountain town in the Canadian Rockies. They started roasting in their garage and built one of Canada's most beloved coffee brands. Every batch is still roasted with a view of the Rocky Mountains. Certified organic & fair trade.",
+            storyLoc: "Invermere, BC — heart of the Canadian Rockies",
+            storyHook:
+              "Organic coffee roasted in the Rockies since '96 — from a garage to a Canadian icon.",
+            scenicImg:
+              "linear-gradient(135deg, #2d6a4f 0%, #74c69d 40%, #95d5b2 60%, #d8f3dc 100%)",
+            scenicLabel: "🏔️ Canadian Rockies, BC",
+            producerImg:
+              "linear-gradient(135deg, #5c3a22 0%, #8b6f47 50%, #c9a96e 100%)",
+            producerLabel: "☕ Elana & Leo, Founders",
+          },
+        },
+        Starbucks: {
+          canadian: false,
+          flag: "🇺🇸",
+          owner: "Starbucks Corporation",
+          hq: "Seattle, Washington, USA",
+          alt: {
+            name: "Salt Spring Moka Java",
+            brand: "Salt Spring Coffee",
+            shortName: "Salt Spring",
+            province: "BC",
+            price: "$14.99 / 400g",
+            pricePerG: "$3.75/100g",
+            shipping: "Free (Prime)",
+            origin: "Salt Spring Island, BC",
+            story:
+              "Born on Salt Spring Island in 1996, this small-batch roaster was one of Canada's first certified organic, fair trade coffee companies. They're a B Corp with deep commitment to social and environmental responsibility. Beans roasted on the island and shipped fresh.",
+            storyLoc: "Salt Spring Island, BC — Gulf Islands",
+            storyHook:
+              "Small-batch organic roasting on a Gulf Island — B Corp, fair trade, shipped fresh.",
+            scenicImg:
+              "linear-gradient(135deg, #0077b6 0%, #00b4d8 40%, #90e0ef 70%, #caf0f8 100%)",
+            scenicLabel: "🏝️ Salt Spring Island, BC",
+            producerImg:
+              "linear-gradient(135deg, #264653 0%, #2a9d8f 50%, #e9c46a 100%)",
+            producerLabel: "🌿 Island Roastery Team",
+          },
+        },
+        Lavazza: {
+          canadian: false,
+          flag: "🇮🇹",
+          owner: "Luigi Lavazza S.p.A.",
+          hq: "Turin, Italy",
+          alt: {
+            name: "Ethical Bean Lush Medium-Dark",
+            brand: "Ethical Bean Coffee",
+            shortName: "Ethical Bean",
+            province: "BC",
+            price: "$13.99 / 340g",
+            pricePerG: "$4.11/100g",
+            shipping: "Free (Prime)",
+            origin: "Vancouver, BC",
+            story:
+              "Founded in Vancouver in 2003, Ethical Bean was one of the first carbon-neutral coffee companies in North America. Every bag has a QR code so you can trace your coffee from farm to cup. They roast in small batches in East Vancouver and are 100% fair trade certified.",
+            storyLoc: "Vancouver, BC — East Van roastery",
+            storyHook:
+              "Canada's first carbon-neutral coffee — trace every bag from farm to cup via QR code.",
+            scenicImg:
+              "linear-gradient(135deg, #4a6741 0%, #7ea172 40%, #a3c293 70%, #d4e7cb 100%)",
+            scenicLabel: "🌇 East Vancouver, BC",
+            producerImg:
+              "linear-gradient(135deg, #6d4c41 0%, #8d6e63 50%, #bcaaa4 100%)",
+            producerLabel: "♻️ Ethical Bean Roasters",
+          },
+        },
+        "Kicking Horse": {
+          canadian: true,
+          flag: "🇨🇦",
+          owner: "Kicking Horse Coffee Co.",
+          hq: "Invermere, British Columbia",
+          story:
+            "One of Canada's most iconic coffee brands! Founded in 1996 in the Rocky Mountain town of Invermere, BC. They roast organic, fair trade beans at their mountain facility. From a garage operation to a national favourite.",
+          storyHook:
+            "Organic coffee roasted in the Rockies since 1996 — from a garage to a Canadian icon.",
+          storyLoc: "Invermere, BC — Canadian Rockies",
+          scenicImg:
+            "linear-gradient(135deg, #2d6a4f 0%, #74c69d 40%, #95d5b2 60%, #d8f3dc 100%)",
+          scenicLabel: "🏔️ Canadian Rockies, BC",
+          producerImg:
+            "linear-gradient(135deg, #5c3a22 0%, #8b6f47 50%, #c9a96e 100%)",
+          producerLabel: "☕ Elana & Leo, Founders",
+        },
+        "Tim Hortons": {
+          canadian: true,
+          flag: "🇨🇦",
+          owner: "Restaurant Brands International",
+          hq: "Toronto, Ontario",
+          story:
+            "A true Canadian institution! Founded in 1964 by hockey player Tim Horton in Hamilton, Ontario. Now headquartered in Toronto. Tim Hortons is woven into Canadian culture from coast to coast.",
+          storyHook:
+            "Founded by hockey legend Tim Horton in 1964 — Canada's coffee, coast to coast.",
+          storyLoc: "Toronto, ON — founded in Hamilton, 1964",
+          scenicImg:
+            "linear-gradient(135deg, #c9184a 0%, #ff4d6d 40%, #ff758f 70%, #ffccd5 100%)",
+          scenicLabel: "🍩 Iconic Canadian brand",
+          producerImg:
+            "linear-gradient(135deg, #3a0ca3 0%, #4361ee 50%, #4cc9f0 100%)",
+          producerLabel: "🏒 Tim Horton, Founder",
+        },
+        Nescafé: {
+          canadian: false,
+          flag: "🇨🇭",
+          owner: "Nestlé S.A.",
+          hq: "Vevey, Switzerland",
+          alt: {
+            name: "Pilot Coffee Voyage Blend",
+            brand: "Pilot Coffee Roasters",
+            shortName: "Pilot Coffee",
+            province: "ON",
+            price: "$18.00 / 300g",
+            pricePerG: "$6.00/100g",
+            shipping: "$5.99",
+            origin: "Toronto, ON",
+            story:
+              "Pilot Coffee started in 2009 in Toronto's east end, founded by friends passionate about specialty coffee. They operate multiple cafés across Toronto and roast all their beans in-house. Known for meticulous sourcing and small-batch quality.",
+            storyLoc: "Toronto, ON — Leslieville roastery",
+            storyHook:
+              "Small-batch specialty roasting from Toronto's east end since 2009 — café culture meets craft.",
+            scenicImg:
+              "linear-gradient(135deg, #1d3557 0%, #457b9d 40%, #a8dadc 70%, #f1faee 100%)",
+            scenicLabel: "🏙️ Leslieville, Toronto",
+            producerImg:
+              "linear-gradient(135deg, #3d405b 0%, #81b29a 50%, #f2cc8f 100%)",
+            producerLabel: "☕ Pilot Roasting Team",
+          },
+        },
+      };
+
+      const PRODUCTS = [
+        {
+          emoji: "☕",
+          bg: "linear-gradient(135deg,#3b2415,#5c3a22)",
+          title: "Folgers Classic Roast, Medium Roast Ground Coffee, 320g",
+          brand: "Folgers",
+          rating: "★★★★☆",
+          reviews: "14,832",
+          price: "9",
+          cents: "99",
+          delivery: "FREE delivery Mon, Mar 25",
+        },
+        {
+          emoji: "☕",
+          bg: "linear-gradient(135deg,#1a3a2a,#2d5a3a)",
+          title: "Kicking Horse Coffee, Kick Ass, Dark Roast, Ground, 454g",
+          brand: "Kicking Horse",
+          rating: "★★★★★",
+          reviews: "8,291",
+          price: "11",
+          cents: "49",
+          delivery: "FREE delivery Mon, Mar 25",
+        },
+        {
+          emoji: "☕",
+          bg: "linear-gradient(135deg,#1b4332,#2d6a4f)",
+          title: "Starbucks Medium Roast Ground Coffee — Pike Place, 340g",
+          brand: "Starbucks",
+          rating: "★★★★☆",
+          reviews: "22,104",
+          price: "10",
+          cents: "49",
+          delivery: "FREE delivery Mon, Mar 25",
+        },
+        {
+          emoji: "☕",
+          bg: "linear-gradient(135deg,#1a1a2e,#16213e)",
+          title: "Lavazza Super Crema Whole Bean Espresso, 1kg",
+          brand: "Lavazza",
+          rating: "★★★★★",
+          reviews: "31,567",
+          price: "21",
+          cents: "99",
+          delivery: "FREE delivery Tue, Mar 26",
+        },
+        {
+          emoji: "☕",
+          bg: "linear-gradient(135deg,#4a1515,#6b2020)",
+          title: "Tim Hortons Original Blend, Medium Roast Ground Coffee, 300g",
+          brand: "Tim Hortons",
+          rating: "★★★★☆",
+          reviews: "6,743",
+          price: "8",
+          cents: "99",
+          delivery: "FREE delivery Mon, Mar 25",
+        },
+        {
+          emoji: "☕",
+          bg: "linear-gradient(135deg,#3d2b1f,#5d4037)",
+          title: "Nescafé Rich, Instant Coffee, 170g",
+          brand: "Nescafé",
+          rating: "★★★★☆",
+          reviews: "4,218",
+          price: "7",
+          cents: "49",
+          delivery: "FREE delivery Mon, Mar 25",
+        },
+      ];
+
+      // ================================================================
+      // RENDER PAGE
+      // ================================================================
+      const grid = document.getElementById("productGrid");
+      PRODUCTS.forEach((p) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+    <div class="pc-img" style="background:${p.bg}">${p.emoji}</div>
+    <div class="pc-title">${p.title}</div>
+    <div class="pc-brand">by <span class="brand-slot" data-brand="${p.brand}">${p.brand}</span></div>
+    <div class="pc-rating">${p.rating} <span style="color:#007185;font-size:11px">${p.reviews}</span></div>
+    <div class="pc-price"><span class="sym">$</span>${p.price}<span class="cents">${p.cents}</span></div>
+    <div class="pc-delivery">${p.delivery}</div>
+  `;
+        grid.appendChild(card);
+      });
+
+      // ================================================================
+      // TEXT PATTERN MATCHING — inject tags
+      // ================================================================
+      let tagCount = 0;
+
+      function injectTags() {
+        document.getElementById("scanLine").style.display = "block";
+        setTimeout(() => {
+          const slots = document.querySelectorAll(".brand-slot");
+          let delay = 0;
+          slots.forEach((slot) => {
+            const key = slot.dataset.brand;
+            const data = BRANDS[key];
+            if (!data) return;
+            delay += 140;
+            setTimeout(() => {
+              if (data.canadian) {
+                // Maple leaf tag
+                const tag = document.createElement("span");
+                tag.className = "tag-maple tag-animate";
+                tag.textContent = "🍁";
+                tag.dataset.brand = key;
+                tag.addEventListener("mouseenter", (e) => showPopout(e, key));
+                tag.addEventListener("mouseleave", () => scheduleHidePopout());
+                tag.addEventListener("click", () => openSidebarFor(key));
+                slot.parentNode.insertBefore(tag, slot.nextSibling);
+              } else {
+                // Dynamic recommendation tag
+                const a = data.alt;
+                const tag = document.createElement("span");
+                tag.className = "tag-rec tag-animate";
+                tag.innerHTML = `<span class="tag-leaf">🍁</span>${a.shortName}, ${a.province}`;
+                tag.dataset.brand = key;
+                tag.addEventListener("mouseenter", (e) => showPopout(e, key));
+                tag.addEventListener("mouseleave", () => scheduleHidePopout());
+                tag.addEventListener("click", () => openSidebarFor(key));
+                slot.parentNode.insertBefore(tag, slot.nextSibling);
+              }
+              tagCount++;
+              updateBadge();
+            }, delay);
+          });
+        }, 500);
+      }
+
+      function updateBadge() {
+        const el = document.getElementById("badgeCount");
+        el.textContent = tagCount;
+        el.style.transform = "scale(1)";
+      }
+
+      // ================================================================
+      // POPOUT (both tag types — hover to preview, click CTA to open sidebar)
+      // ================================================================
+      const popout = document.getElementById("popout");
+      let popoutTimer = null;
+      let activePopoutBrand = null;
+
+      function showPopout(e, brandKey) {
+        clearTimeout(popoutTimer);
+        const data = BRANDS[brandKey];
+        if (!data) return;
+        activePopoutBrand = brandKey;
+
+        // Position relative to contentArea, accounting for page scroll
+        const contentArea = document.getElementById("contentArea");
+        const pageEl = document.getElementById("page");
+        const rect = e.target.getBoundingClientRect();
+        const containerRect = contentArea.getBoundingClientRect();
+        const tagX = rect.left - containerRect.left;
+        const tagY = rect.top - containerRect.top;
+
+        const popoutH = 290;
+        const spaceBelow = containerRect.bottom - rect.bottom;
+        let top;
+        if (spaceBelow > popoutH + 20) {
+          top = tagY + rect.height + 8;
+        } else {
+          top = tagY - popoutH - 8;
+          if (top < 0) top = 10;
+        }
+        let left = tagX - 140;
+        left = Math.max(10, Math.min(left, containerRect.width - 320));
+
+        popout.style.left = left + "px";
+        popout.style.top = top + "px";
+
+        if (data.canadian) {
+          // Canadian brand popout
+          popout.innerHTML = `
+      <div class="popout-photos">
+        <div class="popout-photo scenic" style="background:${data.scenicImg};display:flex;align-items:flex-end;padding:6px 8px;">
+          <span style="font-size:9px;color:white;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${data.scenicLabel}</span>
+        </div>
+        <div class="popout-photo" style="background:${data.producerImg};display:flex;align-items:flex-end;padding:6px 8px;">
+          <span style="font-size:9px;color:white;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${data.producerLabel}</span>
+        </div>
+      </div>
+      <div class="popout-body">
+        <div class="popout-flag" style="background:var(--green-50);color:var(--green-700);">🇨🇦 Canadian</div>
+        <div class="popout-name">${brandKey}</div>
+        <div class="popout-loc">📍 ${data.hq}</div>
+        <div class="popout-story">${data.storyHook}</div>
+        <button class="popout-cta" onclick="openSidebarFor('${brandKey}')">
+          Chat with agent <span class="arrow">→</span>
+        </button>
+      </div>
+    `;
+        } else {
+          // Non-Canadian brand — show the Canadian alternative in popout
+          const a = data.alt;
+          popout.innerHTML = `
+      <div class="popout-photos">
+        <div class="popout-photo scenic" style="background:${a.scenicImg};display:flex;align-items:flex-end;padding:6px 8px;">
+          <span style="font-size:9px;color:white;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${a.scenicLabel}</span>
+        </div>
+        <div class="popout-photo" style="background:${a.producerImg};display:flex;align-items:flex-end;padding:6px 8px;">
+          <span style="font-size:9px;color:white;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${a.producerLabel}</span>
+        </div>
+      </div>
+      <div class="popout-body">
+        <div class="popout-flag" style="background:var(--red-50);color:var(--red-700);">🍁 Canadian Alternative</div>
+        <div class="popout-name">${a.brand}</div>
+        <div class="popout-loc">📍 ${a.origin}</div>
+        <div style="font-size:11px;color:var(--warm-400);margin-bottom:6px;">Replaces: ${brandKey} · ${a.price}</div>
+        <div class="popout-story">${a.storyHook}</div>
+        <button class="popout-cta" onclick="openSidebarFor('${brandKey}')">
+          Compare & learn more <span class="arrow">→</span>
+        </button>
+      </div>
+    `;
+        }
+
+        popout.classList.add("visible");
+        popout.onmouseenter = () => clearTimeout(popoutTimer);
+        popout.onmouseleave = () => scheduleHidePopout();
+      }
+
+      function scheduleHidePopout() {
+        popoutTimer = setTimeout(() => {
+          popout.classList.remove("visible");
+          activePopoutBrand = null;
+        }, 220);
+      }
+
+      // ================================================================
+      // SIDEBAR
+      // ================================================================
+      const sidebar = document.getElementById("sidebar");
+      const sbMessages = document.getElementById("sbMessages");
+      const sbInput = document.getElementById("sbInput");
+
+      function openSidebar() {
+        sidebar.classList.add("open");
+      }
+      function closeSidebar() {
+        sidebar.classList.remove("open");
+      }
+
+      document
+        .getElementById("sbClose")
+        .addEventListener("click", closeSidebar);
+      document.getElementById("extIcon").addEventListener("click", () => {
+        sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+      });
+
+      function clearMessages() {
+        sbMessages.innerHTML = "";
+      }
+      function sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+      function scrollSB() {
+        requestAnimationFrame(() => {
+          sbMessages.scrollTop = sbMessages.scrollHeight;
+        });
+      }
+
+      function addTyping() {
+        const d = document.createElement("div");
+        d.className = "typing";
+        d.id = "typ";
+        d.innerHTML =
+          '<div class="td"></div><div class="td"></div><div class="td"></div>';
+        sbMessages.appendChild(d);
+        scrollSB();
+      }
+      function removeTyping() {
+        const t = document.getElementById("typ");
+        if (t) t.remove();
+      }
+
+      function addM(type, html) {
+        removeTyping();
+        const d = document.createElement("div");
+        d.className = `m ${type}`;
+        d.innerHTML = `<div class="m-bubble">${html}</div>`;
+        sbMessages.appendChild(d);
+        scrollSB();
+      }
+      function addHTML(html) {
+        removeTyping();
+        const w = document.createElement("div");
+        w.innerHTML = html;
+        const el = w.firstElementChild;
+        sbMessages.appendChild(el);
+        scrollSB();
+        return el;
+      }
+
+      // ================================================================
+      // SIDEBAR FLOWS
+      // ================================================================
+      async function openSidebarFor(brandKey) {
+        // Hide popout
+        popout.classList.remove("visible");
+        activePopoutBrand = null;
+
+        clearMessages();
+        openSidebar();
+
+        const data = BRANDS[brandKey];
+        if (!data) return;
+
+        await sleep(300);
+        addTyping();
+        await sleep(1100);
+
+        if (data.canadian) {
+          // ---- CANADIAN ----
+          addM(
+            "agent",
+            `You clicked on <strong>${brandKey}</strong> — great choice! Let me tell you about this one. 🍁`,
+          );
+          addTyping();
+          await sleep(1200);
+
+          addHTML(`
+      <div class="origin-card">
+        <div class="oc-header">
+          <div class="oc-flag ca">🇨🇦</div>
+          <div class="oc-info">
+            <div class="oc-name">${brandKey}</div>
+            <div class="oc-detail ca">✓ Canadian — ${data.hq}</div>
+          </div>
+        </div>
+      </div>
+    `);
+          await sleep(400);
+
+          addM(
+            "agent",
+            `<span class="status-badge canadian">✓ Canadian</span><br><br><strong>${brandKey}</strong> is proudly Canadian! ${data.owner} is headquartered in ${data.hq}. You're supporting a Canadian brand. 🇨🇦`,
+          );
+          addTyping();
+          await sleep(1200);
+
+          addHTML(`
+      <div class="story-sb">
+        <div class="st-hd">📖 The ${brandKey} Story</div>
+        <div class="st-body">${data.story}</div>
+        <div class="st-loc">📍 ${data.storyLoc}</div>
+      </div>
+    `);
+          await sleep(400);
+
+          addM(
+            "agent",
+            `Every Canadian purchase makes a difference! Want a badge to show your support?`,
+          );
+          await sleep(200);
+          addHTML(
+            `<button class="gen-badge" onclick="genBadge('${brandKey}')">🍁 Generate "We Buy Canadian" Badge</button>`,
+          );
+        } else {
+          // ---- NOT CANADIAN ----
+          addM(
+            "agent",
+            `I spotted <strong>${brandKey}</strong> — let me look that up for you...`,
+          );
+          addTyping();
+          await sleep(1300);
+
+          addHTML(`
+      <div class="origin-card">
+        <div class="oc-header">
+          <div class="oc-flag foreign">${data.flag}</div>
+          <div class="oc-info">
+            <div class="oc-name">${brandKey}</div>
+            <div class="oc-detail foreign">Not Canadian — ${data.owner}, ${data.hq}</div>
+          </div>
+        </div>
+      </div>
+    `);
+          await sleep(400);
+
+          const a = data.alt;
+          addM(
+            "agent",
+            `<strong>${brandKey}</strong> is owned by ${data.owner}, based in ${data.hq}. But I've got a great Canadian alternative — <strong>${a.brand}</strong> from ${a.origin}! ${data.flag}→🇨🇦`,
+          );
+          addTyping();
+          await sleep(1600);
+
+          addHTML(`
+      <div class="cmp-card">
+        <div class="cmp-title">⚖️ Side-by-Side</div>
+        <div class="cmp-cols">
+          <div class="cmp-col">
+            <div class="cmp-label">${data.flag} Current</div>
+            <div class="cmp-pname">${brandKey}</div>
+            <div class="cmp-pbrand">${data.owner}</div>
+            <div class="cmp-row"><span class="l">Origin</span><span class="v">${data.hq}</span></div>
+          </div>
+          <div class="cmp-col ca-col">
+            <div class="cmp-label">🍁 Canadian</div>
+            <div class="cmp-pname">${a.name}</div>
+            <div class="cmp-pbrand">${a.brand}</div>
+            <div class="cmp-row"><span class="l">Price</span><span class="v good">${a.price}</span></div>
+            <div class="cmp-row"><span class="l">Shipping</span><span class="v">${a.shipping}</span></div>
+            <div class="cmp-row"><span class="l">Origin</span><span class="v good">${a.origin} 🇨🇦</span></div>
+          </div>
+        </div>
+        <div class="cmp-note">💡 Support Canadian — switch to ${a.brand}!</div>
+      </div>
+    `);
+          await sleep(500);
+
+          addHTML(`
+      <div class="story-sb">
+        <div class="st-hd">📖 The ${a.brand} Story</div>
+        <div class="st-body">${a.story}</div>
+        <div class="st-loc">📍 ${a.storyLoc}</div>
+      </div>
+    `);
+          await sleep(400);
+
+          addHTML(`
+      <div class="qa">
+        <button class="qa-btn" onclick="handleQA('more','${brandKey}')">What else do they make?</button>
+        <button class="qa-btn" onclick="handleQA('similar','${brandKey}')">Similar Canadian brands?</button>
+        <button class="qa-btn" onclick="handleQA('local','${brandKey}')">Where to buy locally?</button>
+      </div>
+    `);
+          await sleep(200);
+          addHTML(
+            `<button class="gen-badge" onclick="genBadge('${data.alt.brand}')">🍁 Generate "We Buy Canadian" Badge</button>`,
+          );
+        }
+      }
+
+      async function genBadge(brandName) {
+        document.querySelectorAll(".gen-badge").forEach((b) => b.remove());
+        addM("user", "Generate my badge!");
+        addTyping();
+        await sleep(1000);
+        addM("agent", "Here's your badge — share it proudly! 🇨🇦");
+        await sleep(200);
+        addHTML(`
+    <div class="badge-card">
+      <div class="b-maple">🍁</div>
+      <div class="b-title">We Buy Canadian</div>
+      <div class="b-prod">${brandName}</div>
+      <div class="b-line"></div>
+    </div>
+  `);
+      }
+
+      async function handleQA(action, brandKey) {
+        document.querySelectorAll(".qa").forEach((q) => q.remove());
+        const data = BRANDS[brandKey];
+        if (!data || !data.alt) return;
+
+        if (action === "more") {
+          addM("user", `What else does ${data.alt.brand} make?`);
+          addTyping();
+          await sleep(1200);
+          addM(
+            "agent",
+            `${data.alt.brand} has a great lineup! They offer several roast profiles and blends — check their website for the full collection. Most are available on Amazon.ca too. All roasted in ${data.alt.origin}. 🇨🇦`,
+          );
+        } else if (action === "similar") {
+          addM("user", "Any similar Canadian brands?");
+          addTyping();
+          await sleep(1200);
+          addM(
+            "agent",
+            `Here are more Canadian options:<br><br>☕ <strong>Kicking Horse</strong> — Invermere, BC<br>☕ <strong>Salt Spring Coffee</strong> — Salt Spring Island, BC<br>☕ <strong>Ethical Bean</strong> — Vancouver, BC<br>☕ <strong>Pilot Coffee</strong> — Toronto, ON<br>☕ <strong>Detour Coffee</strong> — Hamilton, ON<br><br>All roasted in Canada! 🍁`,
+          );
+        } else {
+          addM("user", "Where can I buy locally?");
+          addTyping();
+          await sleep(1200);
+          addM(
+            "agent",
+            `In the Vancouver area, find Canadian coffee at <strong>Save-On-Foods</strong>, <strong>Whole Foods</strong>, <strong>Choices Markets</strong>, and <strong>London Drugs</strong>. Most roasters also ship free across Canada! 📦`,
+          );
+        }
+      }
+
+      // Free text
+      async function handleInput() {
+        const text = sbInput.value.trim();
+        if (!text) return;
+        sbInput.value = "";
+        addM("user", text);
+        addTyping();
+        await sleep(1200);
+        const lower = text.toLowerCase();
+        if (lower.includes("honey") || lower.includes("maple")) {
+          addM(
+            "agent",
+            `For <strong>Canadian honey</strong>, try <strong>Billy Bee</strong> from Stoney Creek, Ontario — buzzing since 1956! 🐝 For <strong>maple syrup</strong>, <strong>Escuminac</strong> from Quebec is incredible. Want a comparison?`,
+          );
+        } else {
+          addM(
+            "agent",
+            `Great question! In the demo I cover coffee brands on this page. Try clicking any 🍁 tag or recommendation tag to see the full flow. More categories coming soon! 🍁`,
+          );
+        }
+      }
+      document.getElementById("sbSend").addEventListener("click", handleInput);
+      sbInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleInput();
+      });
+
+      // ================================================================
+      // INIT
+      // ================================================================
+      window.addEventListener("load", () => {
+        setTimeout(() => injectTags(), 700);
+      });
+    </script>
+  </body>
+</html>

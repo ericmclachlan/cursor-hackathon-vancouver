@@ -19,7 +19,7 @@ function highlightTextNode(textNode) {
     const mark = document.createElement("mark");
     mark.style.backgroundColor = HIGHLIGHT_COLOR;
     mark.style.color = "inherit";
-    mark.textContent = match[0];
+    mark.textContent = match[0] + "🍁";
     fragment.appendChild(mark);
 
     lastIndex = WORD_PATTERN.lastIndex;
