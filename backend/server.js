@@ -1,11 +1,21 @@
 import "dotenv/config";
 import express from "express";
 import { runAgent, getCompanyInfo } from "./agent.js";
+import { handleChat, getBrandForFrontend } from "./chat.js";
 
 const PORT = Number(process.env.PORT || 8787);
 const app = express();
 
 app.set("trust proxy", 1);
+
+// CORS — allow Chrome extension and localhost origins
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (_req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 app.use(express.json({ limit: "2mb" }));
 
@@ -75,6 +85,38 @@ app.get("/playground", (_req, res) => {
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, agent: process.env.OPENROUTER_API_KEY ? "openrouter" : "fallback" });
+});
+
+// ── GET /api/brand/:name — frontend-compatible BrandData ──
+
+app.get("/api/brand/:name", (req, res) => {
+  try {
+    const name = decodeURIComponent(req.params.name);
+    const data = getBrandForFrontend(name);
+    if (!data) {
+      return res.status(404).json({ error: `Brand "${name}" not found` });
+    }
+    res.json(data);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e?.message || "server error" });
+  }
+});
+
+// ── POST /api/chat — mock chatbot endpoint ──
+
+app.post("/api/chat", (req, res) => {
+  try {
+    const { brandKey, message, action, sessionId } = req.body || {};
+    if (!brandKey || typeof brandKey !== "string") {
+      return res.status(400).json({ error: "brandKey is required" });
+    }
+    const result = handleChat({ brandKey, message, action, sessionId });
+    res.json(result);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e?.message || "server error" });
+  }
 });
 
 app.post("/api/company-info", async (req, res) => {

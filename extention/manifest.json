@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Highlights Canadian and non-Canadian brands on Amazon.ca. Discover Canadian alternatives and learn their stories.",
   "permissions": ["sidePanel", "activeTab"],
+  "host_permissions": ["http://localhost:8787/*", "http://127.0.0.1:8787/*"],
   "action": {},
   "side_panel": {
     "default_path": "sidepanel/sidepanel.html"
