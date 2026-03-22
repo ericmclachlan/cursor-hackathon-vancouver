@@ -1,0 +1,269 @@
+openapi: 3.1.0
+info:
+  title: CanadaFirst Brand Highlighter API
+  version: 2.0.0
+  description: |
+    Detects company/brand names in web page text and provides detailed
+    brand information with Canadian heritage analysis.
+
+servers:
+  - url: http://localhost:8787
+    description: Local development
+  - url: https://YOUR-SERVICE.onrender.com
+    description: Production (Render)
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health check
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /api/highlight:
+    post:
+      operationId: highlightBrands
+      summary: Detect brand names in page text
+      description: |
+        Accepts chunks of page text and matches them against 14k known brands
+        from the Wikidata database. Returns brand names found in the text.
+        No LLM call — pure in-memory string matching.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HighlightRequest"
+      responses:
+        "200":
+          description: Brand names found in the text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HighlightResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HighlightErrorResponse"
+
+  /api/company-info:
+    post:
+      operationId: getCompanyInfo
+      summary: Get brand details and Canadian heritage
+      description: |
+        Looks up a company in the local Wikidata database. If the company is
+        Canadian (by country, founding location, or TSX listing), enriches the
+        response with LLM-generated history and Canadian significance.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyInfoRequest"
+      responses:
+        "200":
+          description: Company information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyInfoResponse"
+        "400":
+          description: Missing company name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    # ── Shared ──
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    # ── /health ──
+
+    HealthResponse:
+      type: object
+      required: [ok, agent]
+      properties:
+        ok:
+          type: boolean
+        agent:
+          type: string
+          enum: [openrouter, fallback]
+
+    # ── /api/highlight ──
+
+    TextChunk:
+      type: object
+      required: [id, text]
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the chunk
+        text:
+          type: string
+          description: Text content from the page (max 6000 chars used)
+
+    HighlightRequest:
+      type: object
+      required: [chunks]
+      properties:
+        goal:
+          type: string
+          description: Optional search goal (currently unused, reserved for future)
+        chunks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextChunk"
+          minItems: 1
+          maxItems: 80
+          description: Text chunks from the web page
+        fallbackWord:
+          type: string
+          default: Google
+          description: Word to return if no brands are found
+
+    HighlightResponse:
+      type: object
+      required: [phrases, source]
+      properties:
+        phrases:
+          type: array
+          items:
+            type: string
+          description: Brand names found in the text
+        source:
+          type: string
+          enum: [database, fallback]
+          description: Where the results came from
+
+    HighlightErrorResponse:
+      type: object
+      required: [error, phrases, source]
+      properties:
+        error:
+          type: string
+        phrases:
+          type: array
+          items:
+            type: string
+        source:
+          type: string
+          enum: [error]
+
+    # ── /api/company-info ──
+
+    CompanyInfoRequest:
+      type: object
+      required: [company]
+      properties:
+        company:
+          type: string
+          description: Company or brand name to look up
+
+    CanadianSignals:
+      type: object
+      required: [country_is_canada, founded_in_canada, listed_on_tsx]
+      properties:
+        country_is_canada:
+          type: boolean
+        founded_in_canada:
+          type: boolean
+        listed_on_tsx:
+          type: boolean
+
+    CompanyInfo:
+      type: object
+      required: [name, founded, founders, headquarters, country, industry, isCanadian]
+      properties:
+        name:
+          type: string
+        founded:
+          type: string
+          description: Inception date or "Unknown"
+        founders:
+          type: string
+          description: Comma-separated founder names or "Unknown"
+        headquarters:
+          type: string
+          description: "City, Country"
+        country:
+          type: string
+        industry:
+          type: string
+          description: Comma-separated industries
+        website:
+          type: string
+          nullable: true
+        stockExchanges:
+          type: array
+          items:
+            type: string
+        canadianSignals:
+          $ref: "#/components/schemas/CanadianSignals"
+        isCanadian:
+          type: boolean
+        # LLM-enriched fields (present for Canadian companies)
+        description:
+          type: string
+          description: 2-3 sentence company description
+        history:
+          type: string
+          description: 4-6 sentence history (Canadian focus if applicable)
+        canadianSignificance:
+          type: string
+          description: Why this company matters to Canada (Canadian brands only)
+        products:
+          type: array
+          items:
+            type: string
+        funFact:
+          type: string
+
+    CompanyInfoResponse:
+      type: object
+      required: [company, isCanadian, source]
+      properties:
+        company:
+          type: string
+          description: The queried company name
+        info:
+          oneOf:
+            - $ref: "#/components/schemas/CompanyInfo"
+            - type: "null"
+          description: Company details, or null if not found
+        isCanadian:
+          type: boolean
+        source:
+          type: string
+          enum: [database, database+llm, not-found, fallback]
+          description: |
+            - database: non-Canadian brand, DB info only
+            - database+llm: Canadian brand, enriched with LLM history
+            - not-found: brand not in database
+            - fallback: no API key configured

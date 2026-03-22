@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import { runAgent } from "./agent.js";
+import { runAgent, getCompanyInfo } from "./agent.js";
 
 const PORT = Number(process.env.PORT || 8787);
 const app = express();
@@ -11,7 +11,7 @@ app.use(express.json({ limit: "2mb" }));
 
 app.get("/", (_req, res) => {
   res.type("text/plain").send(
-    "Word highlighter API is running. POST /api/highlight (JSON). Browser test page: GET /playground (same origin — avoids other sites’ CSP blocking localhost)."
+    "Brand Highlighter API is running.\n\nPOST /api/highlight — detect company/brand names in page text\nPOST /api/company-info — get brand history & details\nGET  /playground — browser test page"
   );
 });
 
@@ -77,6 +77,20 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, agent: process.env.OPENROUTER_API_KEY ? "openrouter" : "fallback" });
 });
 
+app.post("/api/company-info", async (req, res) => {
+  try {
+    const { company } = req.body || {};
+    if (!company || typeof company !== "string") {
+      return res.status(400).json({ error: "company name required" });
+    }
+    const result = await getCompanyInfo(company.trim());
+    res.json(result);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e?.message || "server error" });
+  }
+});
+
 app.post("/api/highlight", async (req, res) => {
   try {
     const { goal, chunks, fallbackWord } = req.body || {};
@@ -110,10 +124,10 @@ app.post("/api/highlight", async (req, res) => {
   }
 });
 
-const server = app.listen(PORT, () => {
-  console.log(
-    `Word highlighter API on http://localhost:${PORT} (agent: ${process.env.OPENROUTER_API_KEY ? "OpenRouter" : "fallback"})`
-  );
+const server = app.listen(PORT, "0.0.0.0", () => {
+  const agent = process.env.OPENROUTER_API_KEY ? "OpenRouter" : "fallback";
+  const publicHint = process.env.RENDER_EXTERNAL_URL || `http://127.0.0.1:${PORT}`;
+  console.log(`Word highlighter API listening on 0.0.0.0:${PORT} (${agent}). Public URL (Render): ${publicHint}`);
 });
 
 server.on("error", (err) => {
