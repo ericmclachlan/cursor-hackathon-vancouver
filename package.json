@@ -2,11 +2,20 @@
   "name": "word-highlighter-extension",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc && cp extention/manifest.json dist/manifest.json && cp extention/config.json dist/config.json",
-    "build:win": "tsc && copy extention\\manifest.json dist\\manifest.json && copy extention\\config.json dist\\config.json"
+    "build": "tsc && cp extention/manifest.json dist/manifest.json && cp extention/brands.json dist/brands.json && cp extention/styles.css dist/styles.css && mkdir -p dist/sidepanel && cp extention/sidepanel/sidepanel.html dist/sidepanel/ && cp extention/sidepanel/sidepanel.css dist/sidepanel/ && cp extention/sidepanel/mock-chat-data.json dist/sidepanel/",
+    "build:win": "tsc && copy extention\\manifest.json dist\\manifest.json && copy extention\\brands.json dist\\brands.json && copy extention\\styles.css dist\\styles.css && if not exist dist\\sidepanel mkdir dist\\sidepanel && copy extention\\sidepanel\\sidepanel.html dist\\sidepanel\\ && copy extention\\sidepanel\\sidepanel.css dist\\sidepanel\\",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.5.0",
+    "@types/supertest": "^7.2.0",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.4.5"
   }
 }

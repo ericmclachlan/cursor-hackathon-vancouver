@@ -1,0 +1,87 @@
+{
+  "comingSoonMessage": "AI-powered responses coming soon — currently showing demo data",
+  "flows": {
+    "Folgers": {
+      "brandKey": "Folgers",
+      "canadian": false,
+      "responses": [
+        {
+          "type": "text",
+          "content": "I spotted <strong>Folgers</strong> — let me look that up for you...",
+          "delayMs": 1100
+        },
+        {
+          "type": "origin-card",
+          "content": "{\"flag\":\"🇺🇸\",\"name\":\"Folgers\",\"detail\":\"Not Canadian — J.M. Smucker Co., Orrville, Ohio, USA\",\"canadian\":false}",
+          "delayMs": 400
+        },
+        {
+          "type": "text",
+          "content": "<strong>Folgers</strong> is owned by J.M. Smucker Co., based in Orrville, Ohio, USA. But I've got a great Canadian alternative — <strong>Kicking Horse Coffee</strong> from Invermere, BC! 🇺🇸→🇨🇦",
+          "delayMs": 1300
+        },
+        {
+          "type": "comparison-card",
+          "content": "{\"current\":{\"name\":\"Folgers\",\"owner\":\"J.M. Smucker Co.\",\"hq\":\"Orrville, Ohio, USA\",\"flag\":\"🇺🇸\"},\"alternative\":{\"name\":\"Kicking Horse — Kick Ass Dark Roast\",\"brand\":\"Kicking Horse Coffee\",\"price\":\"$11.49 / 454g\",\"shipping\":\"Free (Prime)\",\"origin\":\"Invermere, BC\"}}",
+          "delayMs": 1600
+        },
+        {
+          "type": "story-card",
+          "content": "{\"brand\":\"Kicking Horse Coffee\",\"story\":\"Founded in 1996 by Elana Rosenfeld and Leo Johnson in Invermere, BC — a small mountain town in the Canadian Rockies. They started roasting in their garage and built one of Canada's most beloved coffee brands.\",\"location\":\"Invermere, BC — heart of the Canadian Rockies\"}",
+          "delayMs": 500
+        },
+        {
+          "type": "qa-buttons",
+          "content": "[\"What else do they make?\",\"Similar Canadian brands?\",\"Where to buy locally?\"]",
+          "delayMs": 400
+        },
+        {
+          "type": "badge-prompt",
+          "content": "Kicking Horse Coffee",
+          "delayMs": 200
+        }
+      ]
+    },
+    "Kicking Horse": {
+      "brandKey": "Kicking Horse",
+      "canadian": true,
+      "responses": [
+        {
+          "type": "text",
+          "content": "You clicked on <strong>Kicking Horse</strong> — great choice! Let me tell you about this one. 🍁",
+          "delayMs": 1100
+        },
+        {
+          "type": "origin-card",
+          "content": "{\"flag\":\"🇨🇦\",\"name\":\"Kicking Horse\",\"detail\":\"✓ Canadian — Invermere, British Columbia\",\"canadian\":true}",
+          "delayMs": 400
+        },
+        {
+          "type": "text",
+          "content": "<span class=\"status-badge canadian\">✓ Canadian</span><br><br><strong>Kicking Horse</strong> is proudly Canadian! Kicking Horse Coffee Co. is headquartered in Invermere, British Columbia. You're supporting a Canadian brand. 🇨🇦",
+          "delayMs": 1200
+        },
+        {
+          "type": "story-card",
+          "content": "{\"brand\":\"Kicking Horse\",\"story\":\"One of Canada's most iconic coffee brands! Founded in 1996 in the Rocky Mountain town of Invermere, BC. They roast organic, fair trade beans at their mountain facility. From a garage operation to a national favourite.\",\"location\":\"Invermere, BC — Canadian Rockies\"}",
+          "delayMs": 400
+        },
+        {
+          "type": "text",
+          "content": "Every Canadian purchase makes a difference! Want a badge to show your support?",
+          "delayMs": 200
+        },
+        {
+          "type": "badge-prompt",
+          "content": "Kicking Horse",
+          "delayMs": 200
+        }
+      ]
+    }
+  },
+  "fallbackResponses": {
+    "honey": "For <strong>Canadian honey</strong>, try <strong>Billy Bee</strong> from Stoney Creek, Ontario — buzzing since 1956! 🐝 For <strong>maple syrup</strong>, <strong>Escuminac</strong> from Quebec is incredible. Want a comparison?",
+    "maple": "For <strong>Canadian honey</strong>, try <strong>Billy Bee</strong> from Stoney Creek, Ontario — buzzing since 1956! 🐝 For <strong>maple syrup</strong>, <strong>Escuminac</strong> from Quebec is incredible. Want a comparison?",
+    "default": "Great question! In the demo I cover coffee brands on this page. Try clicking any 🍁 tag or recommendation tag to see the full flow. More categories coming soon! 🍁"
+  }
+}
