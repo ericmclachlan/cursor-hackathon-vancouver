@@ -314,24 +314,62 @@ function updateBadge(): void {
 // INIT
 // ================================================================
 
-async function init(): Promise<void> {
+const BACKEND_URL = "http://localhost:8787";
+
+async function tryBackendDetection(backendUrl: string): Promise<BrandRegistry | null> {
+  try {
+    const pageText = (document.body.innerText || "").slice(0, 50000);
+    const res = await fetch(`${backendUrl}/api/detect-brands`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: pageText }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.brands && Object.keys(data.brands).length > 0) {
+      return data.brands as BrandRegistry;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function loadLocalBrands(): Promise<BrandRegistry> {
   const url = chrome.runtime.getURL("brands.json");
   const response = await fetch(url);
-  brands = await response.json();
+  return await response.json();
+}
 
-  const trie = new Trie();
-  for (const name of Object.keys(brands)) {
-    trie.insert(name);
+async function init(): Promise<void> {
+  try {
+    // Try backend first, fall back to local brands.json
+    const backendBrands = await tryBackendDetection(BACKEND_URL);
+    if (backendBrands) {
+      brands = backendBrands;
+      console.log(`[CanadaFirst] Loaded ${Object.keys(brands).length} brands from backend`);
+    } else {
+      brands = await loadLocalBrands();
+      console.log(`[CanadaFirst] Using local brands.json (${Object.keys(brands).length} brands)`);
+    }
+
+    const trie = new Trie();
+    for (const name of Object.keys(brands)) {
+      trie.insert(name);
+    }
+
+    // Show scan line animation
+    showScanLine();
+
+    // Inject tags after scan line starts
+    setTimeout(() => {
+      walkTextNodes(document.body, trie);
+      updateBadge();
+    }, 500);
+  } catch (e) {
+    console.error("[CanadaFirst] Init failed:", e);
   }
-
-  // Show scan line animation
-  showScanLine();
-
-  // Inject tags after scan line starts
-  setTimeout(() => {
-    walkTextNodes(document.body, trie);
-    updateBadge();
-  }, 500);
 }
 
 init();

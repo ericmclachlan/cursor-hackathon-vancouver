@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import { runAgent, getCompanyInfo } from "./agent.js";
-import { handleChat, getBrandForFrontend } from "./chat.js";
+import { handleChat, getBrandForFrontend, getAllFrontendBrandNames } from "./chat.js";
 
 const PORT = Number(process.env.PORT || 8787);
 const app = express();
@@ -116,6 +116,34 @@ app.post("/api/chat", (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: e?.message || "server error" });
+  }
+});
+
+// ── POST /api/detect-brands — scan text and return frontend BrandData ──
+
+app.post("/api/detect-brands", (req, res) => {
+  try {
+    const { text } = req.body || {};
+    if (!text || typeof text !== "string") {
+      return res.status(400).json({ error: "text field is required", brands: {} });
+    }
+
+    const lower = text.toLowerCase();
+    const result = {};
+
+    // Check each frontend brand against the page text
+    for (const name of getAllFrontendBrandNames()) {
+      if (name.length < 3) continue;
+      if (lower.includes(name.toLowerCase())) {
+        const data = getBrandForFrontend(name);
+        if (data) result[name] = data;
+      }
+    }
+
+    res.json({ brands: result });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e?.message || "server error", brands: {} });
   }
 });
 

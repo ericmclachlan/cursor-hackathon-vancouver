@@ -192,6 +192,64 @@ describe("GET /api/brand/:name", () => {
 });
 
 // ================================================================
+// POST /api/detect-brands — brand detection from page text
+// ================================================================
+
+describe("POST /api/detect-brands", () => {
+  it("should return 400 if text is missing", async () => {
+    const res = await request("POST", "/api/detect-brands", {});
+    expect(res.status).toBe(400);
+    expect(res.data.error).toBeDefined();
+  });
+
+  it("should return brands record for text containing known brand names", async () => {
+    const res = await request("POST", "/api/detect-brands", {
+      text: "I love Folgers coffee and Tim Hortons donuts",
+    });
+    expect(res.status).toBe(200);
+    expect(res.data.brands).toBeDefined();
+    expect(typeof res.data.brands).toBe("object");
+
+    // Should find Folgers and Tim Hortons
+    const brandNames = Object.keys(res.data.brands);
+    expect(brandNames.length).toBeGreaterThanOrEqual(2);
+
+    // Each brand should have BrandData shape
+    for (const name of brandNames) {
+      const b = res.data.brands[name];
+      expect(typeof b.canadian).toBe("boolean");
+      expect(typeof b.flag).toBe("string");
+      expect(typeof b.owner).toBe("string");
+      expect(typeof b.hq).toBe("string");
+    }
+  });
+
+  it("should return empty brands for text with no known brands", async () => {
+    const res = await request("POST", "/api/detect-brands", {
+      text: "Just some random text with no brand names at all xyz123",
+    });
+    expect(res.status).toBe(200);
+    expect(res.data.brands).toBeDefined();
+    expect(Object.keys(res.data.brands).length).toBe(0);
+  });
+
+  it("should identify Canadian vs non-Canadian brands", async () => {
+    const res = await request("POST", "/api/detect-brands", {
+      text: "Kicking Horse coffee is better than Starbucks",
+    });
+    expect(res.status).toBe(200);
+    const brands = res.data.brands;
+
+    if (brands["Kicking Horse"]) {
+      expect(brands["Kicking Horse"].canadian).toBe(true);
+    }
+    if (brands["Starbucks"]) {
+      expect(brands["Starbucks"].canadian).toBe(false);
+    }
+  });
+});
+
+// ================================================================
 // Manifest host_permissions
 // ================================================================
 

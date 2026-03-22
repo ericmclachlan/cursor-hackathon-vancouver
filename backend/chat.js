@@ -60,6 +60,14 @@ export function getBrandForFrontend(name) {
   return null;
 }
 
+/**
+ * Returns all brand name keys from the frontend brands.json registry.
+ */
+export function getAllFrontendBrandNames() {
+  loadFrontendData();
+  return Object.keys(frontendBrands);
+}
+
 /* ── POST /api/chat — scripted chatbot responses ── */
 
 export function handleChat({ brandKey, message, action, sessionId }) {
