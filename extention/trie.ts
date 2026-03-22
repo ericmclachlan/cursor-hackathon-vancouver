@@ -49,9 +49,23 @@ class Trie {
         j++;
 
         if (node.isEnd) {
-          const afterChar = j < text.length ? text[j] : "";
+          // Peek ahead: consume a possessive "'s" or "'s" so the icon sits
+          // after the full token (e.g. "Amazon's") rather than mid-word.
+          let endJ = j;
+          if (
+            endJ < text.length &&
+            (text[endJ] === "'" || text[endJ] === "\u2019") &&
+            endJ + 1 < text.length &&
+            (text[endJ + 1] === "s" || text[endJ + 1] === "S")
+          ) {
+            const afterPossessive = endJ + 2 < text.length ? text[endJ + 2] : "";
+            if (afterPossessive === "" || !isWordChar(afterPossessive)) {
+              endJ += 2; // include the 's
+            }
+          }
+          const afterChar = endJ < text.length ? text[endJ] : "";
           if (afterChar === "" || !isWordChar(afterChar)) {
-            lastValidMatch = j; // record end of this valid match
+            lastValidMatch = endJ; // record end of this valid match
           }
         }
       }
