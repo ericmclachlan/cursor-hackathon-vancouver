@@ -8,15 +8,15 @@ A Chrome extension that highlights Canadian brands on every page and appends a ð
 
 ### Build
 
-Since the source is TypeScript, you need to compile it before loading into Chrome. Docker is the easiest way if you don't have Node.js installed locally:
+Run the build script â€” it installs Node.js automatically via `winget` if it isn't already present:
 
-```bash
-docker run --rm -v "${PWD}:/app" -w /app node:20-alpine sh -c "npm install && npm run build"
+```powershell
+.\build.ps1
 ```
 
-Or if you have Node.js installed:
+Or manually, if you already have Node.js:
 
-```bash
+```powershell
 npm install
 npm run build
 ```
