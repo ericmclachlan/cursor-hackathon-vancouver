@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CanadaFirst</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <div class="sb-header">
+      <div class="sb-logo">🍁</div>
+      <div class="sb-name">CanadaFirst</div>
+    </div>
+    <div class="cf-coming-soon">
+      <span class="cf-coming-soon-icon">🚀</span>
+      <span class="cf-coming-soon-text">AI-powered responses coming soon — currently showing demo data</span>
+    </div>
+    <div class="sb-messages" id="sbMessages"></div>
+    <div class="sb-input-bar">
+      <input
+        type="text"
+        id="sbInput"
+        placeholder="Ask about Canadian alternatives..."
+      />
+      <button class="sb-send" id="sbSend">➤</button>
+    </div>
+    <script src="sidepanel.js"></script>
+  </body>
+</html>
