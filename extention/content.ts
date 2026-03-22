@@ -62,10 +62,10 @@ function mapleLeafSvg(fill: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="-2015 -2000 4030 4030" style="vertical-align:middle;margin-left:2px;display:inline-block" aria-hidden="true"><path fill="${fill}" d="${MAPLE_LEAF_PATH}"/></svg>`;
 }
 
-function createMapleTag(brandKey: string): HTMLSpanElement {
+function createMapleTag(brandKey: string, hq: string): HTMLSpanElement {
   const tag = document.createElement("span");
   tag.className = "cf-tag-maple cf-tag-animate";
-  tag.innerHTML = mapleLeafSvg("#D52B1E");
+  tag.innerHTML = `<span class="cf-tag-leaf">${mapleLeafSvg("#D52B1E")}</span>`;
   tag.dataset.brand = brandKey;
   tag.addEventListener("click", (e) => {
     e.preventDefault();
@@ -78,7 +78,7 @@ function createMapleTag(brandKey: string): HTMLSpanElement {
 function createRecTag(brandKey: string, alt: BrandAlt): HTMLSpanElement {
   const tag = document.createElement("span");
   tag.className = "cf-tag-rec cf-tag-animate";
-  tag.innerHTML = `<span class="cf-tag-leaf">${mapleLeafSvg("#999999")}</span>${alt.shortName}, ${alt.province}`;
+  tag.innerHTML = `<span class="cf-tag-leaf">${mapleLeafSvg("#999999")}</span>`;
   tag.dataset.brand = brandKey;
   tag.addEventListener("click", (e) => {
     e.preventDefault();
@@ -191,10 +191,10 @@ function buildNonCanadianPopout(brandKey: string, data: BrandData): string {
       </div>
     </div>
     <div class="cf-popout-body">
-      <div class="cf-popout-flag" style="background:var(--cf-red-50);color:var(--cf-red-700);">\u{1F341} Canadian Alternative</div>
-      <div class="cf-popout-name">${a.brand}</div>
+      <div class="cf-popout-name">${brandKey}</div>
+      <div class="cf-popout-flag" style="background:var(--cf-red-50);color:var(--cf-red-700);margin-top:6px;">\u{1F341} Canadian Alternative</div>
+      <div class="cf-popout-name" style="font-size:15px;margin-top:4px;">${a.brand}</div>
       <div class="cf-popout-loc">\u{1F4CD} ${a.origin}</div>
-      <div class="cf-popout-replaces" style="font-size:11px;color:var(--cf-warm-400);margin-bottom:6px;">Replaces: ${brandKey} \u00B7 ${a.price}</div>
       <div class="cf-popout-story">${a.storyHook}</div>
       <button class="cf-popout-cta" data-brand="${brandKey}">
         Compare & learn more <span class="cf-arrow">\u2192</span>
@@ -250,7 +250,7 @@ function highlightBrandNode(textNode: Text, trie: Trie): void {
     fragment.appendChild(document.createTextNode(brandName));
 
     if (data.canadian) {
-      const tag = createMapleTag(brandKey);
+      const tag = createMapleTag(brandKey, data.hq);
       fragment.appendChild(tag);
     } else if (data.alt) {
       const tag = createRecTag(brandKey, data.alt);
