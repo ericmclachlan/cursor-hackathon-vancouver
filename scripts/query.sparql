@@ -1,0 +1,74 @@
+# Wikidata SPARQL query: 10,000 most-linked brands and organizations
+# with Canadian-connectedness metadata.
+#
+# This file documents the full intended query for reference.
+# The fetch script (fetch_brands.py) executes it in three phases:
+#
+# Phase 1 — Ranking query (fast):
+#   Fetch the top N item IDs ordered by sitelinks count.
+#   Uses only wdt:P31 wd:Q4830453 and wikibase:sitelinks — no JOINs.
+#
+# Phase 2 — Enrichment queries (batched):
+#   For each batch of item IDs (via VALUES clause), fetch:
+#     - P17  : country of incorporation
+#     - P159 : headquarters location + its P17 country
+#     - P740 : location of formation
+#     - P571 : inception date
+#     - P112 : founded by (persons)
+#     - P414 : stock exchange (TSX / TSX Venture = Canadian listing)
+#     - P452 : industry / sector
+#     - P856 : official website
+#
+# Canadian-connectedness signals derived:
+#   - country_is_canada      : P17 == Q16
+#   - hq_country_is_canada   : P159 -> P17 == Q16
+#   - founded_in_canada      : P740 -> P17 == Q16
+#   - listed_on_tsx          : P414 in {Q169452, Q1456208}  (TSX / TSX-V)
+
+# ── Phase 1: ranking ──────────────────────────────────────────────────────────
+SELECT ?item (MAX(?sl) AS ?sitelinks) WHERE {
+  ?item wdt:P31 wd:Q4830453 .
+  ?item wikibase:sitelinks ?sl .
+}
+GROUP BY ?item
+ORDER BY DESC(?sitelinks)
+LIMIT 10000
+
+# ── Phase 2: enrichment (template — VALUES clause filled in by script) ────────
+SELECT
+  ?item ?itemLabel
+  ?country ?countryLabel
+  ?hqLocation ?hqLocationLabel ?hqCountry ?hqCountryLabel
+  ?foundedLocation ?foundedLocationLabel
+  ?inceptionDate
+  ?founder ?founderLabel
+  ?stockExchange ?stockExchangeLabel
+  ?industry ?industryLabel
+  ?website
+WHERE {
+  VALUES ?item { <<ITEM_IDS>> }
+
+  OPTIONAL { ?item wdt:P17 ?country . }
+  OPTIONAL {
+    ?item wdt:P159 ?hqLocation .
+    OPTIONAL { ?hqLocation wdt:P17 ?hqCountry . }
+  }
+  OPTIONAL { ?item wdt:P740 ?foundedLocation . }
+  OPTIONAL { ?item wdt:P571 ?inceptionDate . }
+  OPTIONAL { ?item wdt:P112 ?founder . }
+  OPTIONAL { ?item wdt:P414 ?stockExchange . }
+  OPTIONAL { ?item wdt:P452 ?industry . }
+  OPTIONAL { ?item wdt:P856 ?website . }
+
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+    ?item rdfs:label ?itemLabel .
+    OPTIONAL { ?country rdfs:label ?countryLabel . }
+    OPTIONAL { ?hqLocation rdfs:label ?hqLocationLabel . }
+    OPTIONAL { ?hqCountry rdfs:label ?hqCountryLabel . }
+    OPTIONAL { ?foundedLocation rdfs:label ?foundedLocationLabel . }
+    OPTIONAL { ?founder rdfs:label ?founderLabel . }
+    OPTIONAL { ?stockExchange rdfs:label ?stockExchangeLabel . }
+    OPTIONAL { ?industry rdfs:label ?industryLabel . }
+  }
+}
