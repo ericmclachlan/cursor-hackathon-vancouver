@@ -1,0 +1,11 @@
+{
+  "name": "word-highlighter-extension",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc && cp extention/manifest.json dist/manifest.json",
+    "build:win": "tsc && copy extention\\manifest.json dist\\manifest.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
