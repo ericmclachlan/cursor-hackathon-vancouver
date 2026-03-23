@@ -68,7 +68,7 @@ function buildHeaders() {
   return headers;
 }
 
-async function callLLM({ system, user, temperature = 0.2 }) {
+export async function callLLM({ system, user, temperature = 0.2 }) {
   const model = process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash";
   const body = JSON.stringify({
     model,

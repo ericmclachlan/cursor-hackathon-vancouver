@@ -44,7 +44,7 @@ const CanadaFirstAPI = {
     }
   },
 
-  async chat(baseUrl: string, params: ApiChatParams): Promise<{ responses: ApiChatResponse[] }> {
+  async chat(baseUrl: string, params: ApiChatParams): Promise<{ responses: ApiChatResponse[]; source?: string }> {
     const res = await fetch(`${baseUrl}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

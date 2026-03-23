@@ -105,13 +105,13 @@ app.get("/api/brand/:name", (req, res) => {
 
 // ── POST /api/chat — mock chatbot endpoint ──
 
-app.post("/api/chat", (req, res) => {
+app.post("/api/chat", async (req, res) => {
   try {
     const { brandKey, message, action, sessionId } = req.body || {};
     if (!brandKey || typeof brandKey !== "string") {
       return res.status(400).json({ error: "brandKey is required" });
     }
-    const result = handleChat({ brandKey, message, action, sessionId });
+    const result = await handleChat({ brandKey, message, action, sessionId });
     res.json(result);
   } catch (e) {
     console.error(e);

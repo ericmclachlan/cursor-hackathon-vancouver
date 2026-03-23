@@ -8,8 +8,10 @@
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowJs": true,
+    "skipLibCheck": true
   },
-  "include": ["extention/**/*.ts", "tests/**/*.ts"],
+  "include": ["extention/**/*.ts", "tests/**/*.ts", "backend/**/*.js"],
   "exclude": ["node_modules", "dist"]
 }

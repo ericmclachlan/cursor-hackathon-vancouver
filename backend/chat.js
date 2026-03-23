@@ -1,15 +1,27 @@
 /**
- * Mock chat handler and brand data adapter for the Chrome extension frontend.
+ * Chat handler with LLM integration and caching.
  *
- * Loads the frontend's brands.json and mock-chat-data.json to serve
- * scripted chatbot responses and frontend-compatible brand data.
+ * When OPENROUTER_API_KEY is set, uses the LLM for brand flows, QA, and free-text.
+ * Falls back to scripted mock responses when LLM is unavailable or fails.
+ * Caches LLM responses to avoid duplicate API calls.
  */
 
 import { readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { callLLM } from "./agent.js";
+import { createCache } from "./cache.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/* ── LLM response cache ── */
+
+const CACHE_TTL = Number(process.env.CACHE_TTL_MS || 3600_000); // 1 hour default
+const chatResponseCache = createCache({ ttlMs: CACHE_TTL });
+
+export function getChatCache() {
+  return chatResponseCache;
+}
 
 /* ── Load frontend brand data ── */
 
@@ -68,11 +80,162 @@ export function getAllFrontendBrandNames() {
   return Object.keys(frontendBrands);
 }
 
-/* ── POST /api/chat — scripted chatbot responses ── */
+/* ── Cache key builder ── */
 
-export function handleChat({ brandKey, message, action, sessionId }) {
+function cacheKey(brandKey, action, message) {
+  return `${brandKey}:${action || "flow"}:${message || ""}`;
+}
+
+/* ── LLM System Prompts ── */
+
+const BRAND_FLOW_SYSTEM = `You are CanadaFirst, a friendly Canadian brand advisor in a Chrome extension sidebar chat.
+Given brand data (JSON), produce a conversational chat flow that tells the user about the brand.
+
+For CANADIAN brands:
+- Greet warmly, mention the brand is Canadian
+- Show pride in their Canadian heritage
+- Tell their story and significance
+
+For NON-CANADIAN brands:
+- Note where they're from
+- Recommend the Canadian alternative (if provided in brand data)
+- Compare pricing and origin
+
+Return ONLY valid JSON in this exact format:
+{
+  "responses": [
+    { "type": "text", "content": "<HTML content for chat bubble>", "delayMs": <number 400-1200> },
+    { "type": "origin-card", "content": "<JSON string with flag, name, detail, canadian fields>", "delayMs": 400 },
+    { "type": "comparison-card", "content": "<JSON string with current and alternative>", "delayMs": 800 },
+    { "type": "story-card", "content": "<JSON string with brand, story, location>", "delayMs": 400 }
+  ]
+}
+
+Use appropriate card types. Text content can include <strong>, <br>, <span class="status-badge canadian"> tags.
+Keep responses concise and enthusiastic about Canadian brands.`;
+
+const QA_SYSTEM = `You are CanadaFirst, a friendly Canadian brand advisor.
+The user is asking a follow-up question about a brand.
+
+Actions:
+- "more": What else does the Canadian alternative make?
+- "similar": Suggest similar Canadian brands in the same category
+- "local": Where to buy locally (focus on Vancouver/BC area)
+
+Return ONLY valid JSON:
+{
+  "responses": [
+    { "type": "text", "content": "<HTML content>", "delayMs": 800 }
+  ]
+}
+
+Keep answers helpful, specific, and focused on Canadian options. Use <strong> and <br> for formatting.`;
+
+const FREETEXT_SYSTEM = `You are CanadaFirst, a friendly Canadian brand advisor in a Chrome extension chat.
+The user is typing a free-text question. Answer helpfully, always steering toward Canadian alternatives and brands.
+
+Return ONLY valid JSON:
+{
+  "responses": [
+    { "type": "text", "content": "<HTML content>", "delayMs": 800 }
+  ]
+}
+
+Keep answers concise (1-3 sentences). Use <strong> and <br> for formatting.`;
+
+/* ── POST /api/chat — LLM-powered with mock fallback ── */
+
+export async function handleChat({ brandKey, message, action, sessionId }) {
   loadFrontendData();
 
+  const key = cacheKey(brandKey, action, message);
+
+  // Check cache first
+  const cached = chatResponseCache.get(key);
+  if (cached) {
+    return { responses: cached, source: "cache" };
+  }
+
+  // Try LLM if API key is configured
+  if (process.env.OPENROUTER_API_KEY) {
+    try {
+      const llmResult = await callLLMForChat({ brandKey, message, action });
+      if (llmResult) {
+        chatResponseCache.set(key, llmResult);
+        return { responses: llmResult, source: "llm" };
+      }
+    } catch (e) {
+      console.error("LLM chat failed, falling back to mock:", e.message);
+    }
+  }
+
+  // Fall back to mock responses
+  const mockResult = handleChatMock({ brandKey, message, action });
+  return { ...mockResult, source: "mock" };
+}
+
+/* ── LLM call dispatcher ── */
+
+async function callLLMForChat({ brandKey, message, action }) {
+  const brandData = getBrandForFrontend(brandKey);
+
+  if (action) {
+    return await callLLMForQA(action, brandKey, brandData);
+  }
+
+  if (message) {
+    return await callLLMForFreeText(message, brandKey, brandData);
+  }
+
+  return await callLLMForBrandFlow(brandKey, brandData);
+}
+
+async function callLLMForBrandFlow(brandKey, brandData) {
+  const brandContext = brandData
+    ? JSON.stringify({ brandKey, ...brandData }, null, 2)
+    : `Brand: ${brandKey} (no detailed data available)`;
+
+  const content = await callLLM({
+    system: BRAND_FLOW_SYSTEM,
+    user: `Generate a chat flow for this brand:\n${brandContext}`,
+    temperature: 0.3,
+  });
+
+  return parseLLMResponse(content);
+}
+
+async function callLLMForQA(action, brandKey, brandData) {
+  const altBrand = brandData?.alt?.brand || brandKey;
+
+  const content = await callLLM({
+    system: QA_SYSTEM,
+    user: `Action: ${action}\nBrand: ${brandKey}\nCanadian alternative: ${altBrand}\nBrand data: ${JSON.stringify(brandData || {}, null, 2)}`,
+    temperature: 0.4,
+  });
+
+  return parseLLMResponse(content);
+}
+
+async function callLLMForFreeText(message, brandKey, brandData) {
+  const content = await callLLM({
+    system: FREETEXT_SYSTEM,
+    user: `User question: ${message}\nContext brand: ${brandKey}\nBrand data: ${JSON.stringify(brandData || {}, null, 2)}`,
+    temperature: 0.5,
+  });
+
+  return parseLLMResponse(content);
+}
+
+function parseLLMResponse(content) {
+  if (!content) return null;
+  const parsed = JSON.parse(content);
+  if (!parsed.responses || !Array.isArray(parsed.responses)) return null;
+  return parsed.responses;
+}
+
+/* ── Mock fallback (original scripted logic) ── */
+
+function handleChatMock({ brandKey, message, action }) {
   // If QA action, return QA response
   if (action) {
     return { responses: buildQAResponse(action, brandKey) };
